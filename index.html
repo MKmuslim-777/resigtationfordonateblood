@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রক্তদাতা রেজিস্ট্রেশন</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* গ্লোবাল স্টাইল */
+        :root {
+            --blood-red: #e63946;
+            --light-red: #ff758f;
+            --dark-red: #c1121f;
+            --pure-white: #f8f9fa;
+            --off-white: #e9ecef;
+            --dark-gray: #212529;
+            --light-gray: #adb5bd;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: var(--pure-white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ভাষা টগল বাটন */
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--blood-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+            transition: transform 0.3s ease, background 0.3s ease;
+            z-index: 1000;
+        }
+
+        .language-toggle:hover {
+            transform: scale(1.1);
+            background: var(--dark-red);
+        }
+
+        .language-toggle:active {
+            transform: scale(0.9);
+        }
+        
+        /* হিরো সেকশন */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+        }
+        
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="%23e63946" fill-opacity="0.05" d="M0,0 L100,0 L100,100 Q50,80 0,100 Z"></path></svg>');
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+            background-position: bottom;
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+        
+        .title {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-gray);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        .title span {
+            color: var(--blood-red);
+            position: relative;
+            display: inline-block;
+        }
+        
+            z-index: 0;
+        }
+        
+        #bloodDrop1 {
+            width: 100px;
+            height: 120px;
+            top: 20%;
+            left: 10%;
+            animation: float 6s ease-in-out infinite, pulse 2s infinite alternate;
+        }
+        
+        #bloodDrop2 {
+            width: 80px;
+            height: 100px;
+            bottom: 15%;
+            right: 10%;
+            animation: float 8s ease-in-out infinite reverse, pulse 3s infinite alternate;
+        }
+        
+        #bloodDrop3 {
+            width: 60px;
+            height: 80px;
+            top: 40%;
+            right: 20%;
+            animation: float 7s ease-in-out infinite, pulse 2.5s infinite alternate;
+            animation-delay: 1s;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(1.1); opacity: 0.9; }
+        }
+        
+        /* সিটিএ বাটন */
+        .cta-button {
+            background-color: var(--blood-red);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+            margin-top: 20px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(230, 57, 70, 0.6);
+        }
+        
+        .cta-button:active {
+            transform: translateY(1px);
+        }
+        
+        .cta-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--dark-red), var(--light-red));
+            z-index: -1;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        .cta-button:hover::before {
+            opacity: 1;
+        }
+        
+        .pulse {
+            display: inline-block;
+            margin-left: 10px;
+            animation: pulseArrow 1.5s infinite;
+        }
+        
+        @keyframes pulseArrow {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        /* ফর্ম সেকশন */
+        .form-section {
+            padding: 60px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .form-container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .form-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--blood-red), var(--dark-red));
+        }
+        
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .form-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--dark-gray);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .form-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--blood-red);
+        }
+        
+        /* ফর্ম গ্রুপ */
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .input-group label {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: var(--light-gray);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            background-color: white;
+            padding: 0 5px;
+        }
+        
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--blood-red);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+        }
+        
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label,
+        .input-group textarea:focus + label,
+        .input-group textarea:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 10px;
+            font-size: 0.8rem;
+            color: var(--blood-red);
+        }
+        
+        .input-group .highlight {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--blood-red);
+            transition: width 0.4s ease;
+        }
+        
+        .input-group input:focus ~ .highlight,
+        .input-group textarea:focus ~ .highlight {
+            width: 100%;
+        }
+        
+        /* এলিজিবিলিটি মিটার */
+        .eligibility-container {
+            margin-bottom: 30px;
+        }
+        
+        .eligibility-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .eligibility-meter-container {
+            height: 10px;
+            background-color: var(--off-white);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .eligibility-meter {
+            height: 100%;
+            width: 0;
+            border-radius: 5px;
+            transition: width 0.5s ease, background-color 0.5s ease;
+        }
+        
+        /* সাবমিট বাটন */
+        .submit-btn {
+            background: linear-gradient(45deg, var(--blood-red), var(--dark-red));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(230, 57, 70, 0.6);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .submit-btn .submit-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .submit-btn.loading .submit-spinner {
+            opacity: 1;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* থ্যাঙ্ক ইউ পপআপ */
+        .thank-you-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        
+        .thank-you-popup.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .thank-you-card {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transform: scale(0.8);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .thank-you-popup.active .thank-you-card {
+            transform: scale(1);
+        }
+        
+        .thank-you-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--blood-red), var(--dark-red));
+        }
+        
+        .thank-you-icon {
+            font-size: 60px;
+            color: var(--blood-red);
+            margin-bottom: 20px;
+            animation: heartBeat 1s ease;
+        }
+        
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .thank-you-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--dark-gray);
+        }
+        
+        .thank-you-message {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: var(--dark-gray);
+            opacity: 0.9;
+        }
+        
+        .close-popup {
+            background-color: var(--blood-red);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-popup:hover {
+            background-color: var(--dark-red);
+            transform: translateY(-2px);
+        }
+        
+        /* মোবাইল রেস্পন্সিভ */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+            
+            .form-title {
+                font-size: 1.5rem;
+            }
+            
+            .input-group input,
+            .input-group textarea,
+            .input-group select {
+                padding: 12px;
+            }
+            
+            .thank-you-card {
+                padding: 30px 20px;
+            }
+            
+            .thank-you-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* ভয়েস বাটন */
+        .voice-input-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--light-gray);
+            transition: color 0.3s ease;
+        }
+        
+        .voice-input-btn:hover {
+            color: var(--blood-red);
+        }
+        
+        .voice-input-btn.listening {
+            animation: pulse 1.5s infinite;
+            color: var(--blood-red);
+        }
+        
+        /* স্ক্রল ইন্ডিকেটর */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--blood-red);
+            opacity: 0.8;
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-text {
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+        }
+        
+        .scroll-arrow {
+            width: 20px;
+            height: 20px;
+            border-right: 2px solid var(--blood-red);
+            border-bottom: 2px solid var(--blood-red);
+            transform: rotate(45deg);
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-20px) translateX(-50%); }
+            60% { transform: translateY(-10px) translateX(-50%); }
+        }
+    </style>
+</head>
+<body>
+    <!-- ভাষা টগল বাটন -->
+    <button class="language-toggle" id="languageToggle">EN</button>
+
+    <!-- হিরো সেকশন -->
+    <section class="hero" id="hero">
+        <div class="blood-drop" id="bloodDrop1"></div>
+        <div class="blood-drop" id="bloodDrop2"></div>
+        <div class="blood-drop" id="bloodDrop3"></div>
+        
+        <div class="hero-content">
+            <h1 class="title">রক্তদাতা <span>হিরো</span> হোন</h1>
+            <p class="subtitle">একটি রক্তদান হাজার জীবন বাঁচাতে পারে</p>
+            <button class="cta-button" id="registerBtn">রেজিস্টার করুন <span class="pulse">→</span></button>
+        </div>
+        
+        <div class="scroll-indicator">
+            <div class="scroll-text">স্ক্রল করুন</div>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+    
+    <!-- ফর্ম সেকশন -->
+    <section class="form-section" id="formSection">
+        <div class="form-container">
+            <h2 class="form-title">রক্তদাতা তথ্য ফর্ম</h2>
+            
+            <form id="donorForm">
+                <div class="input-group">
+                    <input type="text" id="name" name="name" placeholder=" " required>
+                    <label for="name">পূর্ণ নাম</label>
+                    <span class="highlight"></span>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="current_address" name="current_address" placeholder=" " required>
+                    <label for="current_address">বর্তমান ঠিকানা</label>
+                    <span class="highlight"></span>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="permanent_address" name="permanent_address" placeholder=" ">
+                    <label for="permanent_address">স্থায়ী ঠিকানা</label>
+                    <span class="highlight"></span>
+                </div>
+                
+                <div class="input-group">
+                    <input type="tel" id="phone1" name="phone1" placeholder=" " required>
+                    <label for="phone1">জরুরি নম্বর ১</label>
+                    <span class="highlight"></span>
+                    <button type="button" class="voice-input-btn" id="voiceBtn1">🎤</button>
+                </div>
+                
+                <div class="input-group">
+                    <input type="tel" id="phone2" name="phone2" placeholder=" " required>
+                    <label for="phone2">জরুরি নম্বর ২</label>
+                    <span class="highlight"></span>
+                    <button type="button" class="voice-input-btn" id="voiceBtn2">🎤</button>
+                </div>
+                
+                <div class="input-group">
+                    <input type="date" id="last_donation" name="last_donation" placeholder=" " required>
+                    <label for="last_donation">শেষ রক্তদানের তারিখ</label>
+                    <span class="highlight"></span>
+                </div>
+                
+                <div class="eligibility-container">
+                    <div class="eligibility-label">
+                        <span>রক্তদানের উপযুক্ততা</span>
+                        <span id="eligibilityText">তারিখ সিলেক্ট করুন</span>
+                    </div>
+                    <div class="eligibility-meter-container">
+                        <div class="eligibility-meter" id="eligibilityMeter"></div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <textarea id="health_issues" name="health_issues" placeholder=" "></textarea>
+                    <label for="health_issues">শারীরিক সমস্যা (যদি থাকে)</label>
+                    <span class="highlight"></span>
+                </div>
+                <div class="input-group">
+                    <select id="blood_group" name="blood_group">
+                        <option value="" selected disabled>Select Your Blood Group</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                    <span class="highlight"></span>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    সাবমিট করুন
+                    <span class="submit-spinner"></span>
+                </button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- থ্যাঙ্ক ইউ পপআপ -->
+    <div class="thank-you-popup" id="thankYouPopup">
+        <div class="thank-you-card">
+            <div class="thank-you-icon">❤️</div>
+            <h3 class="thank-you-title">ধন্যবাদ!</h3>
+            <p class="thank-you-message">আপনার তথ্য সফলভাবে জমা হয়েছে। আপনি এখন একজন রক্তদাতা হিরো!</p>
+            <p class="thank-you-message">জরুরি প্রয়োজনে আপনার সাথে যোগাযোগ করা হতে পারে।</p>
+            <button class="close-popup" id="closePopup">ঠিক আছে</button>
+        </div>
+    </div>
+    
+    <script>
+        // Telegram Bot Token এবং User ID
+        const botToken = '7651123120:AAHyx5hWbbA5zguNTNjFmlS-0hDsQKievp4';
+        const chatId = '6662565190';
+
+        // DOM Elements
+        const registerBtn = document.getElementById('registerBtn');
+        const formSection = document.getElementById('formSection');
+        const donorForm = document.getElementById('donorForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const lastDonationInput = document.getElementById('last_donation');
+        const eligibilityMeter = document.getElementById('eligibilityMeter');
+        const eligibilityText = document.getElementById('eligibilityText');
+        const thankYouPopup = document.getElementById('thankYouPopup');
+        const closePopup = document.getElementById('closePopup');
+        const voiceBtn1 = document.getElementById('voiceBtn1');
+        const voiceBtn2 = document.getElementById('voiceBtn2');
+        const languageToggle = document.getElementById('languageToggle');
+        let currentLanguage = 'bn';
+
+        const translations = {
+            en: {
+                title: "Become a Blood Donor Hero",
+                subtitle: "One blood donation can save thousands of lives",
+                registerButton: "Register Now →",
+                formTitle: "Blood Donor Information Form",
+                nameLabel: "Full Name",
+                currentAddressLabel: "Current Address",
+                permanentAddressLabel: "Permanent Address",
+                phone1Label: "Emergency Number 1",
+                phone2Label: "Emergency Number 2",
+                lastDonationLabel: "Last Donation Date",
+                eligibilityLabel: "Eligibility for Donation",
+                healthIssuesLabel: "Health Issues (if any)",
+                bloodGroupPlaceholder: "Select Your Blood Group",
+                submitButton: "Submit",
+                thankYouTitle: "Thank You!",
+                thankYouMessage: "Your information has been successfully submitted. You are now a blood donor hero!",
+                thankYouMessage2: "You may be contacted in case of an emergency.",
+                closePopup: "Okay",
+                scrollText: "Scroll Down"
+            },
+            bn: {
+                title: "রক্তদাতা হিরো হোন",
+                subtitle: "একটি রক্তদান হাজার জীবন বাঁচাতে পারে",
+                registerButton: "রেজিস্টার করুন →",
+                formTitle: "রক্তদাতা তথ্য ফর্ম",
+                nameLabel: "পূর্ণ নাম",
+                currentAddressLabel: "বর্তমান ঠিকানা",
+                permanentAddressLabel: "স্থায়ী ঠিকানা",
+                phone1Label: "জরুরি নম্বর ১",
+                phone2Label: "জরুরি নম্বর ২",
+                lastDonationLabel: "শেষ রক্তদানের তারিখ",
+                eligibilityLabel: "রক্তদানের উপযুক্ততা",
+                healthIssuesLabel: "শারীরিক সমস্যা (যদি থাকে)",
+                bloodGroupPlaceholder: "আপনার রক্তের গ্রুপ নির্বাচন করুন",
+                submitButton: "সাবমিট করুন",
+                thankYouTitle: "ধন্যবাদ!",
+                thankYouMessage: "আপনার তথ্য সফলভাবে জমা হয়েছে। আপনি এখন একজন রক্তদাতা হিরো!",
+                thankYouMessage2: "জরুরি প্রয়োজনে আপনার সাথে যোগাযোগ করা হতে পারে।",
+                closePopup: "ঠিক আছে",
+                scrollText: "স্ক্রল করুন"
+            }
+        };
+
+        function updateLanguage(language) {
+            document.querySelector('.title').innerHTML = translations[language].title;
+            document.querySelector('.subtitle').textContent = translations[language].subtitle;
+            document.getElementById('registerBtn').innerHTML = translations[language].registerButton;
+            document.querySelector('.form-title').textContent = translations[language].formTitle;
+            document.querySelector('label[for="name"]').textContent = translations[language].nameLabel;
+            document.querySelector('label[for="current_address"]').textContent = translations[language].currentAddressLabel;
+            document.querySelector('label[for="permanent_address"]').textContent = translations[language].permanentAddressLabel;
+            document.querySelector('label[for="phone1"]').textContent = translations[language].phone1Label;
+            document.querySelector('label[for="phone2"]').textContent = translations[language].phone2Label;
+            document.querySelector('label[for="last_donation"]').textContent = translations[language].lastDonationLabel;
+            document.querySelector('.eligibility-label span:first-child').textContent = translations[language].eligibilityLabel;
+            document.querySelector('label[for="health_issues"]').textContent = translations[language].healthIssuesLabel;
+            document.querySelector('#blood_group option:first-child').textContent = translations[language].bloodGroupPlaceholder;
+            document.getElementById('submitBtn').textContent = translations[language].submitButton;
+            document.querySelector('.thank-you-title').textContent = translations[language].thankYouTitle;
+            document.querySelectorAll('.thank-you-message')[0].textContent = translations[language].thankYouMessage;
+            document.querySelectorAll('.thank-you-message')[1].textContent = translations[language].thankYouMessage2;
+            document.getElementById('closePopup').textContent = translations[language].closePopup;
+            document.querySelector('.scroll-text').textContent = translations[language].scrollText;
+        }
+
+        languageToggle.addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'bn' ? 'en' : 'bn';
+            languageToggle.textContent = currentLanguage === 'bn' ? 'EN' : 'BN';
+            document.documentElement.lang = currentLanguage;
+            updateLanguage(currentLanguage);
+        });
+
+        // Initialize with default language
+        updateLanguage(currentLanguage);
+
+        // Scroll to form section on register button click
+        registerBtn.addEventListener('click', () => {
+            formSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Update eligibility meter based on last donation date
+        lastDonationInput.addEventListener('change', updateEligibility);
+
+        function updateEligibility() {
+            const donationDate = new Date(lastDonationInput.value);
+            const today = new Date();
+            const diffTime = today - donationDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            // 120 days required for next donation
+            const eligibilityPercentage = Math.min((diffDays / 120) * 100, 100);
+
+            eligibilityMeter.style.width = `${eligibilityPercentage}%`;
+
+            if (eligibilityPercentage < 100) {
+                const daysLeft = 120 - diffDays;
+                eligibilityText.textContent = `${daysLeft} days remaining`;
+                eligibilityMeter.style.backgroundColor = '#ff0033';
+            } else {
+                eligibilityText.textContent = 'Eligible for donation';
+                eligibilityMeter.style.backgroundColor = '#4CAF50';
+            }
+        }
+
+        // Form submission
+        donorForm.addEventListener('submit', e => {
+            e.preventDefault();
+
+            // Loading state
+            submitBtn.classList.add('loading');
+
+            // Collect form data
+            const formData = new FormData(donorForm);
+            const message = `
+🩸 *New Blood Donor Registration* 🩸
+👤 *Name*: ${formData.get('name')}
+🏠 *Current Address*: ${formData.get('current_address')}
+📍 *Permanent Address*: ${formData.get('permanent_address') || 'N/A'}
+📞 *Phone 1*: ${formData.get('phone1')}
+📞 *Phone 2*: ${formData.get('phone2') || 'N/A'}
+🩺 *Last Donation Date*: ${formData.get('last_donation')}
+💉 *Blood Group*: ${formData.get('blood_group')}
+⚠️ *Health Issues*: ${formData.get('health_issues') || 'None'}
+            `;
+
+            // Send data to Telegram Bot
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to send message');
+                    }
+
+                    // Show thank you popup
+                    thankYouPopup.classList.add('active');
+
+                    // Reset form
+                    donorForm.reset();
+                    eligibilityMeter.style.width = '0';
+                    eligibilityText.textContent = 'Select a date';
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    alert('An error occurred! Please try again later.');
+                })
+                .finally(() => {
+                    submitBtn.classList.remove('loading');
+                });
+        });
+
+        // Close popup
+        closePopup.addEventListener('click', () => {
+            thankYouPopup.classList.remove('active');
+        });
+
+        // Voice input functionality
+        if ('webkitSpeechRecognition' in window) {
+            const recognition1 = new webkitSpeechRecognition();
+            const recognition2 = new webkitSpeechRecognition();
+            
+            recognition1.lang = 'bn-BD';
+            recognition2.lang = 'bn-BD';
+            
+            voiceBtn1.addEventListener('click', () => {
+                voiceBtn1.classList.add('listening');
+                recognition1.start();
+            });
+            
+            voiceBtn2.addEventListener('click', () => {
+                voiceBtn2.classList.add('listening');
+                recognition2.start();
+            });
+            
+            recognition1.onresult = function(event) {
+                document.getElementById('phone1').value = event.results[0][0].transcript;
+                voiceBtn1.classList.remove('listening');
+            };
+            
+            recognition2.onresult = function(event) {
+                document.getElementById('phone2').value = event.results[0][0].transcript;
+                voiceBtn2.classList.remove('listening');
+            };
+            
+            recognition1.onerror = function(event) {
+                voiceBtn1.classList.remove('listening');
+            };
+            
+            recognition2.onerror = function(event) {
+                voiceBtn2.classList.remove('listening');
+            };
+        } else {
+            voiceBtn1.style.display = 'none';
+            voiceBtn2.style.display = 'none';
+        }
+
+        // Set max date for last donation input
+        document.getElementById('last_donation').max = new Date().toISOString().split('T')[0];
+    </script>
+    <footer style="text-align: center; margin-top: 20px;">
+        <a href="http://mk777.rf.gd/?i=1" style="color: var(--blood-red); text-decoration: none;">&copy; 2023 Muslim Uddin MK</a>
+    </footer>
+</body>
+</html>
