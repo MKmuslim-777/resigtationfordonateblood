@@ -1,927 +1,1262 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn"> <!-- Initial language set -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="রক্তদাতা রেজিস্ট্রেশন ফর্ম - একটি রক্তদান হাজার জীবন বাঁচাতে পারে।">
+    <meta property="og:title" content="রক্তদাতা রেজিস্ট্রেশন">
+    <meta property="og:description" content="রক্তদাতা রেজিস্ট্রেশন ফর্ম - একটি রক্তদান হাজার জীবন বাঁচাতে পারে।">
+    <meta property="og:image" content="thumbnail.jpg"> <!-- Make sure this file exists -->
+    <meta property="og:url" content="https://yourwebsite.com"> <!-- Update with your actual URL -->
     <title>রক্তদাতা রেজিস্ট্রেশন</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        /* গ্লোবাল স্টাইল */
+        /* --- Base Styles --- */
         :root {
-            --blood-red: #e63946;
-            --light-red: #ff758f;
-            --dark-red: #c1121f;
-            --pure-white: #f8f9fa;
-            --off-white: #e9ecef;
-            --dark-gray: #212529;
-            --light-gray: #adb5bd;
+            --blood-red: #e63946; --light-red: #ff758f; --dark-red: #c1121f;
+            --pure-white: #f8f9fa; --off-white: #e9ecef; --dark-gray: #212529;
+            --light-gray: #adb5bd; --success-green: #4CAF50; --warning-yellow: #ffc107;
+            --glow-color: rgba(230, 57, 70, 0.3); /* Glow color for interactions */
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            background-color: var(--pure-white);
-            color: var(--dark-gray);
-            line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
+            background-color: var(--pure-white); color: var(--dark-gray);
+            font-family: 'Lato', 'Noto Sans Bengali', sans-serif; font-size: 1.05rem;
+            line-height: 1.7; overflow-x: hidden; position: relative;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', 'Noto Sans Bengali', sans-serif; font-weight: 600; line-height: 1.3; margin:0;
         }
 
-        /* ভাষা টগল বাটন */
+        /* --- Language Toggle --- */
         .language-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background: var(--blood-red);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 20px; right: 20px; width: 50px; height: 50px;
+            background: var(--blood-red); color: white; border: none; border-radius: 50%;
+            cursor: pointer; font-size: 1.1rem; font-family: 'Poppins', sans-serif; font-weight: 600;
+            display: flex; justify-content: center; align-items: center;
             box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
-            transition: transform 0.3s ease, background 0.3s ease;
-            z-index: 1000;
+            transition: transform 0.3s ease, background 0.3s ease; z-index: 1001;
         }
+        .language-toggle:hover { transform: scale(1.1); background: var(--dark-red); }
 
-        .language-toggle:hover {
-            transform: scale(1.1);
-            background: var(--dark-red);
-        }
-
-        .language-toggle:active {
-            transform: scale(0.9);
-        }
-        
-        /* হিরো সেকশন */
+        /* --- Hero Section --- */
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; padding: 80px 20px 100px; position: relative;
+            overflow: hidden; background: linear-gradient(135deg, #ffe3e3, #fff0f0, #ffe8e8);
+            background-size: 400% 400%; animation: gradientBG 18s ease infinite;
         }
-        
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="%23e63946" fill-opacity="0.05" d="M0,0 L100,0 L100,100 Q50,80 0,100 Z"></path></svg>');
-            background-size: 100% auto;
-            background-repeat: no-repeat;
-            background-position: bottom;
-            z-index: 0;
-        }
-        
+        @keyframes gradientBG { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
+            position: relative; z-index: 2; max-width: 800px;
+            animation: fadeInContent 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.1) 0.3s; /* Smoother ease */
+            animation-fill-mode: backwards;
         }
-        
-        .title {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            color: var(--dark-gray);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            animation: fadeIn 1s ease-in-out;
+         @keyframes fadeInContent { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        .title { /* Main H1 title */
+            font-size: clamp(2.2rem, 7vw, 3.5rem); font-weight: 700; margin-bottom: 1rem;
+            color: var(--dark-gray); text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            /* No data-lang-key here, handled separately */
         }
-        
-        .title span {
-            color: var(--blood-red);
-            position: relative;
-            display: inline-block;
+        .title span { color: var(--blood-red); } /* Style for the 'Hero' part */
+        .subtitle {
+            font-size: clamp(1rem, 4vw, 1.4rem); margin-bottom: 2.5rem; color: var(--dark-gray);
+            opacity: 0.85; font-weight: 400;
         }
-        
-            z-index: 0;
+        /* SVG Heart Styles with Parallax Prep */
+        .animated-heart {
+            position: absolute; z-index: 1; opacity: 0.7;
+            filter: drop-shadow(3px 3px 4px rgba(193, 18, 31, 0.3));
+            animation: pulseHeart 2.8s ease-in-out infinite;
+            transform-origin: center center;
+            transition: transform 0.2s ease-out; /* Smooth transition for parallax */
+            will-change: transform;
         }
-        
-        #bloodDrop1 {
-            width: 100px;
-            height: 120px;
-            top: 20%;
-            left: 10%;
-            animation: float 6s ease-in-out infinite, pulse 2s infinite alternate;
-        }
-        
-        #bloodDrop2 {
-            width: 80px;
-            height: 100px;
-            bottom: 15%;
-            right: 10%;
-            animation: float 8s ease-in-out infinite reverse, pulse 3s infinite alternate;
-        }
-        
-        #bloodDrop3 {
-            width: 60px;
-            height: 80px;
-            top: 40%;
-            right: 20%;
-            animation: float 7s ease-in-out infinite, pulse 2.5s infinite alternate;
-            animation-delay: 1s;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-            100% { transform: translateY(0) rotate(0deg); }
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.7; }
-            100% { transform: scale(1.1); opacity: 0.9; }
-        }
-        
-        /* সিটিএ বাটন */
+         .animated-heart path { fill: var(--blood-red); }
+        /* Heart positions */
+        #heart1 { width: clamp(60px, 10vw, 90px); top: 15%; left: 10%; animation-duration: 2.8s; }
+        #heart2 { width: clamp(45px, 8vw, 70px); bottom: 12%; right: 8%; animation-duration: 2.5s; animation-delay: 0.5s; opacity: 0.6;}
+        #heart3 { width: clamp(35px, 6vw, 50px); top: 40%; right: 20%; animation-duration: 3s; animation-delay: 1s; opacity: 0.5; }
+        #heart4 { width: clamp(40px, 7vw, 60px); top: 65%; left: 18%; animation-duration: 2.6s; animation-delay: 1.5s; opacity: 0.6; }
+        @keyframes pulseHeart { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+
+        /* CTA Button with Glow */
         .cta-button {
-            background-color: var(--blood-red);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
-            margin-top: 20px;
+            background-color: var(--blood-red); color: white; border: none; padding: 16px 35px;
+            font-size: 1.2rem; font-weight: 600; border-radius: 50px; cursor: pointer;
+            transition: all 0.3s ease, box-shadow 0.4s ease;
+            position: relative; overflow: hidden; z-index: 1;
+            box-shadow: 0 5px 18px rgba(230, 57, 70, 0.45); margin-top: 25px;
         }
-        
+        .cta-button span { display: inline-block; } /* Ensures pulse arrow stays inline */
         .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(230, 57, 70, 0.6);
+            transform: translateY(-4px);
+            background-color: var(--dark-red);
+            box-shadow: 0 8px 25px var(--glow-color), 0 6px 15px rgba(230, 57, 70, 0.5);
         }
-        
-        .cta-button:active {
-            transform: translateY(1px);
+        .cta-button:active { transform: translateY(0px); box-shadow: 0 3px 15px rgba(230, 57, 70, 0.4); }
+        .cta-button::before { /* Shine effect */
+            content:""; position:absolute; top:0; left:-100%; width:100%; height:100%;
+            background:linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transition:left 0.6s ease; z-index:1;
         }
-        
-        .cta-button::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, var(--dark-red), var(--light-red));
-            z-index: -1;
-            transition: opacity 0.3s ease;
-            opacity: 0;
-        }
-        
-        .cta-button:hover::before {
-            opacity: 1;
-        }
-        
-        .pulse {
-            display: inline-block;
-            margin-left: 10px;
-            animation: pulseArrow 1.5s infinite;
-        }
-        
-        @keyframes pulseArrow {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(5px); }
-            100% { transform: translateX(0); }
-        }
-        
-        /* ফর্ম সেকশন */
-        .form-section {
-            padding: 60px 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-        }
-        
-        .form-container {
-            background-color: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        .form-container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--blood-red), var(--dark-red));
-        }
-        
-        .form-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-        
-        .form-title {
-            font-size: 2rem;
-            margin-bottom: 30px;
-            color: var(--dark-gray);
-            position: relative;
-            display: inline-block;
-        }
-        
-        .form-title::after {
-            content: "";
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background-color: var(--blood-red);
-        }
-        
-        /* ফর্ম গ্রুপ */
-        .input-group {
-            position: relative;
-            margin-bottom: 30px;
-        }
-        
-        .input-group label {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            color: var(--light-gray);
-            pointer-events: none;
-            transition: all 0.3s ease;
-            background-color: white;
-            padding: 0 5px;
-        }
-        
-        .input-group input,
-        .input-group textarea,
-        .input-group select {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background-color: white;
-        }
-        
-        .input-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        .input-group input:focus,
-        .input-group textarea:focus,
-        .input-group select:focus {
-            outline: none;
-            border-color: var(--blood-red);
-            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
-        }
-        
-        .input-group input:focus + label,
-        .input-group input:not(:placeholder-shown) + label,
-        .input-group textarea:focus + label,
-        .input-group textarea:not(:placeholder-shown) + label {
-            top: -10px;
-            left: 10px;
-            font-size: 0.8rem;
-            color: var(--blood-red);
-        }
-        
-        .input-group .highlight {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--blood-red);
-            transition: width 0.4s ease;
-        }
-        
-        .input-group input:focus ~ .highlight,
-        .input-group textarea:focus ~ .highlight {
-            width: 100%;
-        }
-        
-        /* এলিজিবিলিটি মিটার */
-        .eligibility-container {
-            margin-bottom: 30px;
-        }
-        
-        .eligibility-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-        }
-        
-        .eligibility-meter-container {
-            height: 10px;
+        .cta-button:hover::before { left: 100%; }
+        .pulse { display:inline-block; margin-left:10px; animation:pulseArrow 1.5s infinite; }
+        @keyframes pulseArrow { 0%{transform:translateX(0)} 50%{transform:translateX(6px)} 100%{transform:translateX(0)} }
+
+         /* --- Counter Section --- */
+        .counter-section {
+            padding: 60px 20px; /* Increased padding */
             background-color: var(--off-white);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .eligibility-meter {
-            height: 100%;
-            width: 0;
-            border-radius: 5px;
-            transition: width 0.5s ease, background-color 0.5s ease;
-        }
-        
-        /* সাবমিট বাটন */
-        .submit-btn {
-            background: linear-gradient(45deg, var(--blood-red), var(--dark-red));
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
-        }
-        
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(230, 57, 70, 0.6);
-        }
-        
-        .submit-btn:active {
-            transform: translateY(1px);
-        }
-        
-        .submit-btn .submit-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            margin-left: 10px;
-            vertical-align: middle;
-        }
-        
-        .submit-btn.loading .submit-spinner {
-            opacity: 1;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* থ্যাঙ্ক ইউ পপআপ */
-        .thank-you-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-        
-        .thank-you-popup.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-        
-        .thank-you-card {
-            background: white;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            padding: 40px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-            transform: scale(0.8);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            /* Added for fade-in */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, transform;
         }
-        
-        .thank-you-popup.active .thank-you-card {
-            transform: scale(1);
+        .counter-section.is-visible {
+             opacity: 1;
+             transform: translateY(0);
         }
-        
-        .thank-you-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, var(--blood-red), var(--dark-red));
-        }
-        
-        .thank-you-icon {
-            font-size: 60px;
+        .counter-container { max-width: 300px; margin: 0 auto; }
+        .counter-icon {
+            font-size: 2.8rem; /* Slightly larger icon */
             color: var(--blood-red);
-            margin-bottom: 20px;
-            animation: heartBeat 1s ease;
+            margin-bottom: 15px; /* Increased margin */
+            display: inline-block; /* Needed for animation */
+            animation: pulseIcon 2.5s ease-in-out infinite 1s; /* Added pulse animation */
         }
-        
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            25% { transform: scale(1.2); }
-            50% { transform: scale(1); }
-            75% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+        @keyframes pulseIcon {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
-        
-        .thank-you-title {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            color: var(--dark-gray);
+        .counter-number {
+            font-size: clamp(2.8rem, 8vw, 3.5rem); /* Responsive font size */
+            font-weight: 700;
+            color: var(--dark-red);
+            font-family: 'Poppins', sans-serif;
+             min-height: 55px; /* Prevent layout shift during count */
         }
-        
-        .thank-you-message {
+        .counter-text {
             font-size: 1.1rem;
-            margin-bottom: 25px;
             color: var(--dark-gray);
+            font-weight: 500;
+        }
+
+        /* --- Impact Section --- */
+        .impact-section {
+            background-color: #fef6f6; padding: 70px 20px; text-align: center; overflow: hidden;
+             /* Added for fade-in */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s; /* Slight delay */
+            will-change: opacity, transform;
+        }
+         .impact-section.is-visible {
+             opacity: 1;
+             transform: translateY(0);
+        }
+        .impact-title { color: var(--dark-red); margin-bottom: 40px; font-size: clamp(1.8rem, 5vw, 2.5rem); font-weight: 700; }
+        .facts-container { max-width: 1000px; margin: 0 auto; display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; }
+        .fact-card {
+            background: white; padding: 30px; border-radius: 15px; box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+            flex-basis: 280px; flex-grow: 1; border-left: 6px solid var(--blood-red);
+            opacity: 0; transform: translateY(30px);
+            /* Combined transitions, delay set by JS */
+            transition: opacity 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.1), transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.1), box-shadow 0.4s ease, transform 0.4s ease;
+            transition-delay: 0s; /* Default delay */
+            will-change: opacity, transform;
+        }
+        .fact-card.is-visible { opacity: 1; transform: translateY(0); }
+        .fact-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(200,0,0,0.1);
+        }
+        .fact-card h3 { color:var(--blood-red); margin-bottom:12px; font-size:1.6rem; font-weight:700; }
+        .fact-card p { font-size:1rem; color:var(--dark-gray); line-height:1.6; }
+
+        /* --- Form Section --- */
+        .form-section {
+            padding: 60px 20px; max-width: 800px; margin: 60px auto; position: relative; overflow: hidden;
+        }
+        .form-container {
+            background-color: white; border-radius: 20px; padding: clamp(35px, 6vw, 50px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden;
+            border-top: 6px solid var(--blood-red);
+            /* Added for fade-in */
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.1), transform 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.1); /* Smoother ease */
+            will-change: opacity, transform;
+        }
+        .form-container.is-visible { opacity: 1; transform: translateY(0); }
+        .form-title { font-size: clamp(1.6rem, 5vw, 2.2rem); margin-bottom: 35px; color: var(--dark-gray); font-weight: 700; }
+
+        /* Form Group & Inputs */
+        .input-group { position: relative; margin-bottom: 35px; }
+        .input-group input::placeholder, .input-group textarea::placeholder { color: transparent; }
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%; padding: 16px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem;
+            font-family: 'Lato', 'Noto Sans Bengali', sans-serif; transition: all 0.3s ease, transform 0.2s ease;
+            background-color: white; color: var(--dark-gray);
+        }
+        .input-group select:invalid { color: var(--light-gray); }
+        .input-group input[type="date"]:required:invalid::-webkit-datetime-edit { color: var(--light-gray); }
+        .input-group input[type="date"] { color: var(--dark-gray); }
+        .input-group input[type="date"]:invalid { color: var(--light-gray); }
+        .input-group label {
+            position: absolute; top: 16px; left: 16px; color: var(--light-gray); pointer-events: none;
+            transition: all 0.3s ease; background-color: white; padding: 0 6px; font-size: 1rem;
+             font-family: 'Lato', 'Noto Sans Bengali', sans-serif;
+        }
+        .input-group textarea { min-height: 110px; resize: vertical; }
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none; border-color: var(--blood-red);
+            box-shadow: 0 0 0 4px var(--glow-color);
+        }
+        /* Label animation trigger */
+        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label,
+        .input-group textarea:focus + label, .input-group textarea:not(:placeholder-shown) + label,
+        .input-group select:valid + label, .input-group input[type="date"]:focus + label,
+        .input-group input[type="date"]:valid + label {
+            top: -10px; left: 12px; font-size: 0.8rem; color: var(--blood-red); font-weight: 500;
+        }
+        .input-group .highlight {
+            position:absolute; bottom:0; left:50%; width:0; height:2px; background-color:var(--blood-red);
+            transition:width .4s ease, left .4s ease; z-index:1;
+        }
+        .input-group input:focus ~ .highlight, .input-group textarea:focus ~ .highlight,
+        .input-group select:focus ~ .highlight { width: 100%; left: 0; }
+        /* Validation Icon */
+        .input-group .validation-icon { position:absolute; right:15px; top:50%; transform:translateY(-50%); font-size:1.3rem; opacity:0; transition:opacity .3s ease, transform .3s ease; pointer-events:none; z-index:2; }
+        .input-group input[type="tel"] ~ .validation-icon { right: 50px; }
+        .input-group.validated .validation-icon { opacity:1; transform:translateY(-50%) scale(1); }
+        .input-group.validated.valid .validation-icon { transform:translateY(-50%) scale(1.1); }
+        .input-group.valid .validation-icon::after { content:'✓'; color:var(--success-green); }
+        .input-group.invalid .validation-icon::after { content:'✕'; color:var(--blood-red); }
+        /* Eligibility Meter */
+        .eligibility-container { margin:35px 0; }
+        .eligibility-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:.95rem; color:var(--dark-gray); }
+        #eligibilityText { font-weight:500; text-align:right; }
+        .eligibility-meter-container { height:12px; background-color:var(--off-white); border-radius:6px; overflow:hidden; box-shadow:inset 0 1px 3px rgba(0,0,0,.1); }
+        .eligibility-meter { height:100%; width:0; border-radius:6px; transition:width .8s cubic-bezier(.25,1,.5,1), background-color .8s ease; background-color:var(--light-gray); }
+        /* Submit Button */
+        .submit-btn {
+            background: linear-gradient(45deg, var(--blood-red), var(--dark-red)); color: white; border: none;
+            padding: 16px 30px; font-size: 1.15rem; font-weight: 600; font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+            border-radius: 8px; cursor: pointer; transition: all 0.3s ease, box-shadow 0.4s ease; width: 100%;
+            position: relative; overflow: hidden; box-shadow: 0 5px 18px rgba(230, 57, 70, 0.4);
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-4px); box-shadow: 0 8px 25px var(--glow-color), 0 6px 15px rgba(230, 57, 70, 0.5);
+            background: linear-gradient(45deg, var(--dark-red), var(--blood-red));
+        }
+        .submit-btn:active:not(:disabled) { transform: translateY(0px) scale(0.98); box-shadow: 0 3px 15px rgba(230, 57, 70, 0.4); }
+        .submit-btn:disabled { opacity:0.6; cursor:not-allowed; }
+        .submit-btn .submit-spinner { display:inline-block; width:20px; height:20px; border:3px solid rgba(255,255,255,.3); border-radius:50%; border-top-color:white; animation:spin 1s linear infinite; opacity:0; position:absolute; right:20px; top:50%; transform:translateY(-50%); transition:opacity .3s ease; pointer-events:none; }
+        .submit-btn.loading { color: transparent; }
+        .submit-btn.loading > span[data-lang-key="submitButton"] { visibility: hidden; } /* Hide text span directly */
+        .submit-btn.loading .submit-spinner { opacity: 1; }
+        @keyframes spin { to{transform:translateY(-50%) rotate(360deg)} }
+
+        /* Thank You Popup */
+        .thank-you-popup { position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(30,30,30,.9); display:flex; justify-content:center; align-items:center; z-index:1050; opacity:0; pointer-events:none; transition:opacity .6s ease; }
+        .thank-you-popup.active { opacity:1; pointer-events:all; }
+        .thank-you-card { background:white; border-radius:25px; width:90%; max-width:520px; padding:45px 40px; text-align:center; position:relative; transform:scale(.7) translateY(30px); transition:transform .5s cubic-bezier(.175,.885,.32,1.275), opacity .5s ease; box-shadow:0 18px 45px rgba(0,0,0,.25); opacity:0; }
+        .thank-you-popup.active .thank-you-card { transform:scale(1) translateY(0); opacity:1; }
+        .thank-you-icon { width:80px; height:80px; background:var(--blood-red); border-radius:50%; display:inline-flex; justify-content:center; align-items:center; margin-top:-85px; margin-bottom:25px; position:relative; z-index:1; box-shadow:0 8px 20px rgba(230,57,70,.5); font-size:40px; color:white; animation:popupHeartBeat 1.8s ease-in-out infinite; }
+        @keyframes popupHeartBeat { 0%,100%{transform:scale(1)} 10%,30%{transform:scale(.95)} 20%,40%,60%,80%{transform:scale(1.1)} 50%,70%,90%{transform:scale(1)} }
+        .thank-you-title { font-size:clamp(1.8rem,5vw,2.3rem); margin-bottom:18px; color:var(--dark-gray); font-weight:700; }
+        .thank-you-message { font-size:1.1rem; margin-bottom:15px; color:var(--dark-gray); opacity:.9; line-height:1.7; }
+        /* Social Share */
+        .social-share { margin-top:30px; margin-bottom:30px; border-top:1px solid var(--off-white); padding-top:25px; }
+        .social-share p { margin-bottom:18px; font-size:1rem; color:var(--dark-gray); font-weight:500; }
+        .social-share a { text-decoration:none; margin:0 12px; color:#555; font-size:2.2em; transition:transform .3s ease, color .3s ease; display:inline-block; }
+        .social-share a:hover { transform:translateY(-3px) scale(1.1); }
+        #shareFacebook:hover { color:#1877F2; } #shareTwitter:hover { color:#1DA1F2; } #shareWhatsApp:hover { color:#25D366; }
+        .close-popup { background-color:var(--blood-red); color:white; border:none; padding:14px 35px; border-radius:50px; cursor:pointer; transition:all .3s ease; font-size:1.05rem; font-weight:600; font-family:'Poppins','Noto Sans Bengali',sans-serif; }
+        .close-popup:hover { background-color:var(--dark-red); transform:translateY(-3px); box-shadow:0 5px 15px rgba(230,57,70,.35); }
+
+        /* --- FAQ Section --- */
+        .faq-section {
+            padding: 60px 20px; /* Default padding */
+            max-width: 800px;
+            margin: 60px auto; /* Default margin */
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.1), transform 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            will-change: opacity, transform;
+        }
+        .faq-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .faq-title {
+            text-align: center;
+            font-size: clamp(1.8rem, 5vw, 2.5rem); /* Default font size */
+            color: var(--dark-red);
+            margin-bottom: 40px; /* Default margin */
+             font-weight: 700;
+        }
+        .faq-item {
+            border-bottom: 1px solid var(--off-white);
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+        }
+        .faq-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .faq-question {
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; font-weight: 600; font-size: 1.1rem; /* Default font size */
+            color: var(--dark-gray); padding: 10px 0; transition: color 0.3s ease;
+            position: relative;
+        }
+         .faq-question:hover { color: var(--blood-red); }
+        .faq-question::after { /* Arrow icon */
+            content: '+'; font-size: 1.5rem; font-weight: bold;
+            color: var(--blood-red); transition: transform 0.3s ease;
+             margin-left: 10px; line-height: 1; flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+        .faq-item.active .faq-question::after { transform: rotate(45deg); }
+        .faq-answer {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out, opacity 0.4s ease-out;
+            font-size: 1rem; /* Default font size */
+            line-height: 1.7; color: var(--dark-gray);
+             opacity: 0;
+             padding: 0 10px; /* Padding inside answer */
+        }
+        .faq-item.active .faq-answer {
+            max-height: 300px; /* Adjust as needed */
+            padding: 15px 10px 10px;
             opacity: 0.9;
         }
-        
-        .close-popup {
-            background-color: var(--blood-red);
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .close-popup:hover {
-            background-color: var(--dark-red);
-            transform: translateY(-2px);
-        }
-        
-        /* মোবাইল রেস্পন্সিভ */
+
+        /* --- Mobile Responsive --- */
         @media (max-width: 768px) {
-            .title {
-                font-size: 2rem;
+             .counter-number { font-size: 2.5rem; }
+             .counter-text { font-size: 1rem; }
+
+             /* FAQ Section Mobile Adjustments */
+             .faq-section {
+                 margin: 40px 15px; /* Reduce top/bottom margin, add side margin */
+                 padding: 30px 15px; /* Reduce padding slightly */
+                 max-width: none; /* Allow it to fill width within side margins */
+                 width: auto; /* Let margin define width */
+                 /* overflow-x: hidden; Removed as margin should prevent overflow */
+             }
+             .faq-title {
+                 font-size: clamp(1.6rem, 6vw, 2rem);
+                 margin-bottom: 30px;
+             }
+             .faq-question {
+                 font-size: 1rem;
+                 /* Allow text to wrap if needed */
+                 align-items: flex-start; /* Align icon to top if text wraps */
+             }
+              .faq-question span { /* If question text is wrapped in span */
+                  flex-grow: 1; /* Allow text to take space */
+                  margin-right: 5px; /* Space between text and icon */
+              }
+             .faq-answer {
+                 font-size: 0.95rem; /* Slightly smaller text on mobile */
+             }
+        }
+
+        /* --- Voice Input --- */
+        .voice-input-btn { position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--light-gray); transition:color .3s ease, transform .3s ease; padding:5px; z-index:3; }
+        .voice-input-btn:hover { color:var(--blood-red); transform:translateY(-50%) scale(1.15); }
+        .voice-input-btn.listening { animation:pulseVoice 1.5s infinite; color:var(--blood-red); }
+        @keyframes pulseVoice { 0%{opacity:.7;transform:translateY(-50%) scale(1)} 50%{opacity:1;transform:translateY(-50%) scale(1.2)} 100%{opacity:.7;transform:translateY(-50%) scale(1)} }
+
+        /* --- Scroll Indicator --- */
+        .scroll-indicator { position:absolute; bottom:30px; left:50%; transform: translateX(-50%); display:flex; flex-direction:column; align-items:center; color:var(--blood-red); opacity:0; animation:fadeInScroll 1s ease 1.5s forwards, bounce 2s infinite 2.5s; z-index:3; }
+        .scroll-text { margin-bottom:6px; font-size:.8rem; font-weight:500; font-family:'Poppins',sans-serif; }
+        .scroll-arrow { width:22px; height:22px; border-right:3px solid var(--blood-red); border-bottom:3px solid var(--blood-red); transform:rotate(45deg); }
+        @keyframes fadeInScroll { to{opacity:.9} }
+        @keyframes bounce { 0%,20%,50%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-18px)} 60%{transform:translateY(-8px)} } /* Corrected bounce axis */
+
+        /* --- Loading Screen --- */
+        #loadingScreen { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--blood-red); display:flex; justify-content:center; align-items:center; z-index:10000; transition:opacity .8s ease-out .2s, visibility 0s linear 1s; opacity:1; visibility:visible; }
+        #loadingScreen.hidden { opacity:0; visibility:hidden; }
+        .loader-content { display:flex; flex-direction:column; align-items:center; color:white; }
+        .loading-heart { width:60px; height:auto; margin-bottom:20px; animation:loadingHeartBeat 1.2s ease-in-out infinite; fill:white; }
+        @keyframes loadingHeartBeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+        .loading-text { font-family:'Poppins',sans-serif; font-size:1.1rem; font-weight:500; opacity:.8; }
+
+        /* --- Fade-in Base (Selector updated) --- */
+        /* Section fade-ins are now handled by individual section classes and is-visible */
+        /* fact-card fade-in remains handled here and by IntersectionObserver */
+        .fact-card {
+            opacity:0; transform:translateY(40px);
+            transition: opacity .9s cubic-bezier(.175,.885,.32,1), transform .9s cubic-bezier(.175,.885,.32,1), box-shadow .4s ease;
+            transition-delay: 0s; /* Base delay, JS overrides */
+            will-change: opacity, transform;
+        }
+        .fact-card.is-visible { opacity:1; transform:translateY(0); }
+
+        /* --- Footer --- */
+        footer { background-color:#edecec; color:var(--dark-gray); padding:35px 20px; text-align:center; margin-top:80px; border-top:5px solid var(--blood-red); font-size:.95rem; line-height:1.6; }
+        footer p { margin-bottom:12px; } footer p:last-child{margin-bottom:0;}
+        footer a { color:var(--dark-red); text-decoration:none; font-weight:600; transition:color .3s ease; border-bottom:1px dashed transparent; }
+        footer a:hover { color:var(--blood-red); border-bottom-color:var(--blood-red); }
+
+        /* --- Reduced Motion --- */
+        @media (prefers-reduced-motion: reduce) {
+            html{scroll-behavior:auto !important}
+            *,*::before,*::after{
+                animation-duration:.01ms !important;
+                animation-iteration-count:1 !important;
+                transition-duration:.01ms !important;
+                transition-delay:0ms !important;
+                animation-delay: 0ms !important;
             }
-            
-            .subtitle {
-                font-size: 1.2rem;
+            /* Disable specific animations */
+             .animated-heart, .pulse, .pulseVoice, .scroll-indicator, .hero, .loading-heart, .popupHeartBeat, .counter-icon {
+                animation: none !important;
             }
-            
-            .form-container {
-                padding: 30px 20px;
-            }
-            
-            .form-title {
-                font-size: 1.5rem;
-            }
-            
-            .input-group input,
-            .input-group textarea,
-            .input-group select {
-                padding: 12px;
-            }
-            
-            .thank-you-card {
-                padding: 30px 20px;
-            }
-            
-            .thank-you-title {
-                font-size: 1.5rem;
-            }
+            /* Ensure elements are visible without transitions */
+            .hero-content, .fact-card, .form-container, .counter-section, .impact-section, .faq-section, .thank-you-card {
+                 opacity: 1 !important;
+                 transform: translateY(0) scale(1) !important;
+                 transition: none !important;
+             }
+             /* Ensure counter shows final number immediately */
+              #donorCounter { animation: none !important; /* Prevent JS animation if any */ }
+              /* Specific transitions to disable */
+             .faq-answer { transition: none !important; }
+             .faq-item.active .faq-answer { max-height: none !important; /* Show immediately */ }
         }
-        
-        /* ভয়েস বাটন */
-        .voice-input-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: var(--light-gray);
-            transition: color 0.3s ease;
-        }
-        
-        .voice-input-btn:hover {
-            color: var(--blood-red);
-        }
-        
-        .voice-input-btn.listening {
-            animation: pulse 1.5s infinite;
-            color: var(--blood-red);
-        }
-        
-        /* স্ক্রল ইন্ডিকেটর */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--blood-red);
-            opacity: 0.8;
-            animation: bounce 2s infinite;
-        }
-        
-        .scroll-text {
-            margin-bottom: 5px;
-            font-size: 0.8rem;
-        }
-        
-        .scroll-arrow {
-            width: 20px;
-            height: 20px;
-            border-right: 2px solid var(--blood-red);
-            border-bottom: 2px solid var(--blood-red);
-            transform: rotate(45deg);
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
-            40% { transform: translateY(-20px) translateX(-50%); }
-            60% { transform: translateY(-10px) translateX(-50%); }
-        }
+
+         /* Add this if submit button shake animation is needed on validation fail */
+         @keyframes shake {
+           10%, 90% { transform: translateX(-1px); }
+           20%, 80% { transform: translateX(2px); }
+           30%, 50%, 70% { transform: translateX(-4px); }
+           40%, 60% { transform: translateX(4px); }
+         }
+
     </style>
 </head>
 <body>
-    <!-- ভাষা টগল বাটন -->
-    <button class="language-toggle" id="languageToggle">EN</button>
+    <!-- Language Toggle -->
+    <button class="language-toggle" id="languageToggle" title="Change Language">EN</button>
 
-    <!-- হিরো সেকশন -->
+    <!-- Hero Section -->
     <section class="hero" id="hero">
-        <div class="blood-drop" id="bloodDrop1"></div>
-        <div class="blood-drop" id="bloodDrop2"></div>
-        <div class="blood-drop" id="bloodDrop3"></div>
-        
+        <!-- SVG Heart Definition -->
+        <svg width="0" height="0" style="position:absolute;"><defs><path id="heart-path" d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2 c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/></defs></svg>
+        <!-- Animated Hearts -->
+        <svg class="animated-heart" id="heart1" viewBox="0 0 32 29.6" data-parallax-depth="0.3"><use xlink:href="#heart-path"/></svg>
+        <svg class="animated-heart" id="heart2" viewBox="0 0 32 29.6" data-parallax-depth="0.2"><use xlink:href="#heart-path"/></svg>
+        <svg class="animated-heart" id="heart3" viewBox="0 0 32 29.6" data-parallax-depth="0.4"><use xlink:href="#heart-path"/></svg>
+        <svg class="animated-heart" id="heart4" viewBox="0 0 32 29.6" data-parallax-depth="0.25"><use xlink:href="#heart-path"/></svg>
+
+        <!-- Hero Content -->
         <div class="hero-content">
+            <!-- H1 is handled specifically by JS for language switching -->
             <h1 class="title">রক্তদাতা <span>হিরো</span> হোন</h1>
-            <p class="subtitle">একটি রক্তদান হাজার জীবন বাঁচাতে পারে</p>
-            <button class="cta-button" id="registerBtn">রেজিস্টার করুন <span class="pulse">→</span></button>
+            <p class="subtitle" data-lang-key="subtitle">একটি রক্তদান হাজার জীবন বাঁচাতে পারে</p>
+            <!-- Button uses data-lang-key but innerHTML is set by JS to preserve arrow -->
+            <button class="cta-button" id="registerBtn" data-lang-key="registerButton">রেজিস্টার করুন <span class="pulse">→</span></button>
         </div>
-        
+        <!-- Scroll Indicator -->
         <div class="scroll-indicator">
-            <div class="scroll-text">স্ক্রল করুন</div>
+            <div class="scroll-text" data-lang-key="scrollText">স্ক্রল করুন</div>
             <div class="scroll-arrow"></div>
         </div>
     </section>
-    
-    <!-- ফর্ম সেকশন -->
+
+    <!-- Counter Section -->
+    <section class="counter-section" id="counterSection">
+        <div class="counter-container">
+             <div class="counter-icon">🫂</div> <!-- Simple emoji example -->
+            <div class="counter-number" id="donorCounter" data-count-to="142">0</div> <!-- Target number -->
+            <div class="counter-text" data-lang-key="counterText">জন রক্তদাতা হিরো</div>
+        </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section class="impact-section" id="impactSection">
+        <h2 class="impact-title" data-lang-key="impactTitle">রক্তদান কেন গুরুত্বপূর্ণ?</h2>
+        <div class="facts-container" id="factsContainer">
+            <!-- Fact cards get 'is-visible' class from JS -->
+            <div class="fact-card"><h3>🩸 ১ ব্যাগ রক্ত</h3><p data-lang-key="impactFact1">৩টি জীবন বাঁচাতে পারে।</p></div>
+            <div class="fact-card"><h3>⏱️ প্রতি ২ সেকেন্ডে</h3><p data-lang-key="impactFact2">কারো না কারো রক্তের প্রয়োজন হয়।</p></div>
+            <div class="fact-card"><h3>💪 আপনিও পারেন</h3><p data-lang-key="impactFact3">একজন জীবন রক্ষাকারী হিরো হতে।</p></div>
+        </div>
+    </section>
+
+    <!-- Form Section -->
     <section class="form-section" id="formSection">
-        <div class="form-container">
-            <h2 class="form-title">রক্তদাতা তথ্য ফর্ম</h2>
-            
-            <form id="donorForm">
-                <div class="input-group">
-                    <input type="text" id="name" name="name" placeholder=" " required>
-                    <label for="name">পূর্ণ নাম</label>
-                    <span class="highlight"></span>
-                </div>
-                
-                <div class="input-group">
-                    <input type="text" id="current_address" name="current_address" placeholder=" " required>
-                    <label for="current_address">বর্তমান ঠিকানা</label>
-                    <span class="highlight"></span>
-                </div>
-                
-                <div class="input-group">
-                    <input type="text" id="permanent_address" name="permanent_address" placeholder=" ">
-                    <label for="permanent_address">স্থায়ী ঠিকানা</label>
-                    <span class="highlight"></span>
-                </div>
-                
-                <div class="input-group">
-                    <input type="tel" id="phone1" name="phone1" placeholder=" " required>
-                    <label for="phone1">জরুরি নম্বর ১</label>
-                    <span class="highlight"></span>
-                    <button type="button" class="voice-input-btn" id="voiceBtn1">🎤</button>
-                </div>
-                
-                <div class="input-group">
-                    <input type="tel" id="phone2" name="phone2" placeholder=" " required>
-                    <label for="phone2">জরুরি নম্বর ২</label>
-                    <span class="highlight"></span>
-                    <button type="button" class="voice-input-btn" id="voiceBtn2">🎤</button>
-                </div>
-                
-                <div class="input-group">
-                    <input type="date" id="last_donation" name="last_donation" placeholder=" " required>
-                    <label for="last_donation">শেষ রক্তদানের তারিখ</label>
-                    <span class="highlight"></span>
-                </div>
-                
-                <div class="eligibility-container">
-                    <div class="eligibility-label">
-                        <span>রক্তদানের উপযুক্ততা</span>
-                        <span id="eligibilityText">তারিখ সিলেক্ট করুন</span>
-                    </div>
-                    <div class="eligibility-meter-container">
-                        <div class="eligibility-meter" id="eligibilityMeter"></div>
-                    </div>
-                </div>
-                
-                <div class="input-group">
-                    <textarea id="health_issues" name="health_issues" placeholder=" "></textarea>
-                    <label for="health_issues">শারীরিক সমস্যা (যদি থাকে)</label>
-                    <span class="highlight"></span>
-                </div>
-                <div class="input-group">
-                    <select id="blood_group" name="blood_group">
-                        <option value="" selected disabled>Select Your Blood Group</option>
-                        <option value="A+">A+</option>
-                        <option value="A-">A-</option>
-                        <option value="B+">B+</option>
-                        <option value="B-">B-</option>
-                        <option value="AB+">AB+</option>
-                        <option value="AB-">AB-</option>
-                        <option value="O+">O+</option>
-                        <option value="O-">O-</option>
-                    </select>
-                    <span class="highlight"></span>
-                </div>
-                
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    সাবমিট করুন
-                    <span class="submit-spinner"></span>
-                </button>
+        <div class="form-container" id="formContainer">
+            <h2 class="form-title" data-lang-key="formTitle">রক্তদাতা তথ্য ফর্ম</h2>
+            <form id="donorForm" novalidate>
+                <!-- Input Groups -->
+                <div class="input-group"><input type="text" id="name" name="name" placeholder=" " required><label for="name" data-lang-key="nameLabel">পূর্ণ নাম</label><span class="highlight"></span></div>
+                <div class="input-group"><input type="text" id="current_address" name="current_address" placeholder=" " required><label for="current_address" data-lang-key="currentAddressLabel">বর্তমান ঠিকানা</label><span class="highlight"></span></div>
+                <div class="input-group"><input type="text" id="permanent_address" name="permanent_address" placeholder=" "><label for="permanent_address" data-lang-key="permanentAddressLabel">স্থায়ী ঠিকানা (ঐচ্ছিক)</label><span class="highlight"></span></div>
+                <div class="input-group"><input type="tel" id="phone1" name="phone1" placeholder=" " required pattern="\+?[0-9\s\-]{10,18}"><label for="phone1" data-lang-key="phone1Label">জরুরি নম্বর ১</label><span class="highlight"></span><button type="button" class="voice-input-btn" id="voiceBtn1" data-lang-key="voiceInputTitle" title="ভয়েস ইনপুট">🎤</button></div>
+                <div class="input-group"><input type="tel" id="phone2" name="phone2" placeholder=" " pattern="\+?[0-9\s\-]{10,18}"><label for="phone2" data-lang-key="phone2Label">জরুরি নম্বর ২ (ঐচ্ছিক)</label><span class="highlight"></span><button type="button" class="voice-input-btn" id="voiceBtn2" data-lang-key="voiceInputTitle" title="ভয়েস ইনপুট">🎤</button></div>
+                <div class="input-group"><select id="blood_group" name="blood_group" required><option value="" selected disabled data-lang-key="bloodGroupPlaceholder">আপনার রক্তের গ্রুপ নির্বাচন করুন</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="AB+">AB+</option><option value="AB-">AB-</option><option value="O+">O+</option><option value="O-">O-</option></select><label for="blood_group" data-lang-key="bloodGroupLabel"></label><span class="highlight"></span></div>
+                <div class="input-group"><input type="date" id="last_donation" name="last_donation" placeholder=" " required><label for="last_donation" data-lang-key="lastDonationLabel">শেষ রক্তদানের তারিখ</label><span class="highlight"></span></div>
+                <div class="eligibility-container"><div class="eligibility-label"><span data-lang-key="eligibilityLabel">রক্তদানের উপযুক্ততা</span><span id="eligibilityText" data-lang-key="eligibilityDateSelect">তারিখ সিলেক্ট করুন</span></div><div class="eligibility-meter-container"><div class="eligibility-meter" id="eligibilityMeter"></div></div></div>
+                <div class="input-group"><textarea id="health_issues" name="health_issues" placeholder=" "></textarea><label for="health_issues" data-lang-key="healthIssuesLabel">শারীরিক সমস্যা (যদি থাকে)</label><span class="highlight"></span></div>
+                <!-- Submit Button (Text content set by JS) -->
+                <button type="submit" class="submit-btn" id="submitBtn"><span data-lang-key="submitButton">সাবমিট করুন</span><span class="submit-spinner"></span></button>
             </form>
         </div>
     </section>
-    
-    <!-- থ্যাঙ্ক ইউ পপআপ -->
+
+     <!-- FAQ Section -->
+     <section class="faq-section" id="faqSection">
+         <h2 class="faq-title" data-lang-key="faqTitle">সাধারণ জিজ্ঞাসা</h2>
+         <div class="faq-item">
+             <div class="faq-question"> <!-- Removed data-lang-key here -->
+                 <span data-lang-key="faqQ1">কারা রক্ত দিতে পারবেন?</span> <!-- Wrapped text in span -->
+             </div>
+             <div class="faq-answer" data-lang-key="faqA1">সাধারণত ১৮ থেকে ৬০ বছর বয়সী যেকোন সুস্থ মানুষ, যাদের ওজন ৪৫ কেজি বা তার বেশি, তারা রক্ত দিতে পারবেন। নির্দিষ্ট কিছু রোগ (যেমন: হেপাটাইটিস বি/সি, এইডস) না থাকলে এবং বিগত ৪ মাসের মধ্যে রক্তদান না করে থাকলে আপনি রক্ত দিতে পারবেন।</div>
+         </div>
+         <div class="faq-item">
+             <div class="faq-question">
+                 <span data-lang-key="faqQ2">কতদিন পর পর রক্ত দেওয়া যায়?</span>
+             </div>
+             <div class="faq-answer" data-lang-key="faqA2">একজন সুস্থ পুরুষ প্রতি ৩ মাস পর পর এবং একজন সুস্থ মহিলা প্রতি ৪ মাস পর পর রক্তদান করতে পারেন।</div>
+         </div>
+         <div class="faq-item">
+             <div class="faq-question">
+                 <span data-lang-key="faqQ3">রক্ত দিলে কি শারীরিক কোনো অসুবিধা হয়?</span>
+             </div>
+             <div class="faq-answer" data-lang-key="faqA3">রক্তদান একটি নিরাপদ প্রক্রিয়া। রক্তদানের পর শরীর দ্রুত সেই রক্তের ঘাটতি পূরণ করে ফেলে। সাময়িকভাবে হালকা দুর্বলতা বা ঝিমুনি লাগতে পারে, যা পর্যাপ্ত বিশ্রাম ও তরল গ্রহণে ঠিক হয়ে যায়। রক্তদান স্বাস্থ্যের জন্য উপকারীও বটে।</div>
+         </div>
+          <div class="faq-item">
+             <div class="faq-question">
+                 <span data-lang-key="faqQ4">রক্তদানের আগে কি বিশেষ প্রস্তুতির প্রয়োজন?</span>
+             </div>
+             <div class="faq-answer" data-lang-key="faqA4">রক্তদানের আগে রাতে পর্যাপ্ত ঘুম এবং সকালে স্বাস্থ্যকর নাস্তা করা উচিত। খালি পেটে রক্তদান করা উচিত নয়। প্রচুর পরিমাণে জল ও তরল পান করুন।</div>
+         </div>
+     </section>
+
+
+    <!-- Thank You Popup -->
     <div class="thank-you-popup" id="thankYouPopup">
         <div class="thank-you-card">
             <div class="thank-you-icon">❤️</div>
-            <h3 class="thank-you-title">ধন্যবাদ!</h3>
-            <p class="thank-you-message">আপনার তথ্য সফলভাবে জমা হয়েছে। আপনি এখন একজন রক্তদাতা হিরো!</p>
-            <p class="thank-you-message">জরুরি প্রয়োজনে আপনার সাথে যোগাযোগ করা হতে পারে।</p>
-            <button class="close-popup" id="closePopup">ঠিক আছে</button>
+            <h3 class="thank-you-title" data-lang-key="thankYouTitle">ধন্যবাদ!</h3>
+            <p class="thank-you-message" data-lang-key="thankYouMessage">আপনার তথ্য সফলভাবে জমা হয়েছে। আপনি এখন একজন রক্তদাতা হিরো!</p>
+            <p class="thank-you-message" data-lang-key="thankYouMessage2">জরুরি প্রয়োজনে আপনার সাথে যোগাযোগ করা হতে পারে।</p>
+            <div class="social-share"><p data-lang-key="sharePrompt">আপনার বন্ধুদের অনুপ্রাণিত করুন:</p><a href="#" id="shareFacebook" target="_blank" title="Share on Facebook" aria-label="Share on Facebook"><svg viewBox="0 0 24 24" style="width: 1em; height: 1em; display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.81C10.44 7.31 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 12 2.04Z"/></svg></a><a href="#" id="shareTwitter" target="_blank" title="Share on Twitter" aria-label="Share on Twitter"><svg viewBox="0 0 24 24" style="width: 1em; height: 1em; display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M22.46 6c-.77.35-1.6.58-2.46.67.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.22-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.01-.06C3.18 20.29 5.26 21 7.5 21c7.14 0 11.04-5.92 11.04-11.05l-.02-.5c.76-.55 1.42-1.23 1.94-2.01Z"/></svg></a><a href="#" id="shareWhatsApp" target="_blank" title="Share on WhatsApp" aria-label="Share on WhatsApp"><svg viewBox="0 0 24 24" style="width: 1em; height: 1em; display: inline-block; vertical-align: middle; fill: currentColor;"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.37 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 6.46 17.5 2 12.04 2M16.56 15.26C16.31 15.91 15.1 16.5 14.78 16.55C14.48 16.6 13.81 16.68 13.19 16.43C12.2 16.05 10.82 15.42 9.71 14.37C8.83 13.54 8.25 12.58 8.07 12.28C7.9 12 7.32 11.21 7.32 10.56C7.32 9.91 7.78 9.5 7.98 9.3C8.17 9.11 8.48 9.01 8.68 9.01C8.88 9.01 9.06 9.01 9.21 9.01C9.37 9.01 9.5 9.13 9.66 9.43C9.83 9.73 10.34 10.95 10.42 11.08C10.49 11.21 10.54 11.33 10.44 11.48C10.34 11.63 10.29 11.68 10.14 11.85C10 12 9.86 12.11 9.71 12.23C9.57 12.35 9.42 12.43 9.55 12.66C9.68 12.89 10.14 13.57 10.8 14.17C11.63 14.93 12.34 15.21 12.61 15.31C12.89 15.41 13.19 15.39 13.39 15.19C13.64 14.94 13.85 14.58 14.08 14.28C14.31 14 14.58 13.95 14.88 14.05C15.18 14.15 16.31 14.74 16.56 15C16.81 15.26 16.91 15.41 16.91 15.61C16.91 15.81 16.81 15.91 16.56 15.26Z"/></svg></a></div>
+            <button class="close-popup" id="closePopup" data-lang-key="closePopup">ঠিক আছে</button>
         </div>
     </div>
-    
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+         <div class="loader-content">
+              <svg class="loading-heart" viewBox="0 0 32 29.6"><use xlink:href="#heart-path"/></svg>
+              <span class="loading-text" data-lang-key="loadingText">লোড হচ্ছে...</span>
+         </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p data-lang-key="footerText1">একটি রক্তদান, একটি নতুন জীবন।</p>
+        <p>© <span id="currentYear"></span> <a href="https://www.facebook.com/Mkuddin7" target="_blank" data-lang-key="footerOwner">মুসলিম উদ্দিন এমকে</a> | All rights reserved.</p> <!-- Example FB link -->
+    </footer>
+
     <script>
-        // Telegram Bot Token এবং User ID
-        const botToken = '7651123120:AAHyx5hWbbA5zguNTNjFmlS-0hDsQKievp4';
-        const chatId = '6662565190';
+        // --- Configuration & Elements ---
+        const botToken = '7651123120:AAHyx5hWbbA5zguNTNjFmlS-0hDsQKievp4'; // Replace with your actual bot token
+        const chatId = '6662565190'; // Replace with your actual chat ID
+        let currentLanguage = 'bn'; // Default language
 
-        // DOM Elements
-        const registerBtn = document.getElementById('registerBtn');
-        const formSection = document.getElementById('formSection');
-        const donorForm = document.getElementById('donorForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const lastDonationInput = document.getElementById('last_donation');
-        const eligibilityMeter = document.getElementById('eligibilityMeter');
-        const eligibilityText = document.getElementById('eligibilityText');
-        const thankYouPopup = document.getElementById('thankYouPopup');
-        const closePopup = document.getElementById('closePopup');
-        const voiceBtn1 = document.getElementById('voiceBtn1');
-        const voiceBtn2 = document.getElementById('voiceBtn2');
-        const languageToggle = document.getElementById('languageToggle');
-        let currentLanguage = 'bn';
+        // --- DOM Elements ---
+        const heroTitleEl = document.querySelector('.title'); // Specific element for H1
+        const registerBtn=document.getElementById('registerBtn'),
+              formSection=document.getElementById('formSection'),
+              donorForm=document.getElementById('donorForm'),
+              submitBtn=document.getElementById('submitBtn'),
+              lastDonationInput=document.getElementById('last_donation'),
+              eligibilityMeter=document.getElementById('eligibilityMeter'),
+              eligibilityText=document.getElementById('eligibilityText'),
+              thankYouPopup=document.getElementById('thankYouPopup'),
+              closePopup=document.getElementById('closePopup'),
+              languageToggle=document.getElementById('languageToggle'),
+              loadingScreen=document.getElementById('loadingScreen'),
+              factsContainer=document.getElementById('factsContainer'),
+              formContainer=document.getElementById('formContainer'),
+              heroSection=document.getElementById('hero'),
+              counterSection=document.getElementById('counterSection'),
+              impactSection=document.getElementById('impactSection'), // Added
+              faqSection = document.getElementById('faqSection'), // Added
+              donorCounterEl=document.getElementById('donorCounter'),
+              faqItems=document.querySelectorAll('.faq-item');
 
+        // --- Translations (Added/Updated keys) ---
         const translations = {
             en: {
-                title: "Become a Blood Donor Hero",
-                subtitle: "One blood donation can save thousands of lives",
-                registerButton: "Register Now →",
-                formTitle: "Blood Donor Information Form",
+                title: "Be a Blood <span>Hero</span>", // Includes span
+                subtitle: "One blood donation can save thousands of lives.",
+                registerButton: "Register Now", // Text only, arrow added separately
+                scrollText: "Scroll Down",
+                counterText: "Blood Donor Heroes",
+                impactTitle: "Why is Blood Donation Important?",
+                impactFact1: "can save up to 3 lives.",
+                impactFact2: "someone needs blood.",
+                impactFact3: "can be a life-saving hero.",
+                formTitle: "Donor Information Form",
                 nameLabel: "Full Name",
                 currentAddressLabel: "Current Address",
-                permanentAddressLabel: "Permanent Address",
+                permanentAddressLabel: "Permanent Address (Optional)",
                 phone1Label: "Emergency Number 1",
-                phone2Label: "Emergency Number 2",
-                lastDonationLabel: "Last Donation Date",
-                eligibilityLabel: "Eligibility for Donation",
-                healthIssuesLabel: "Health Issues (if any)",
+                phone2Label: "Emergency Number 2 (Optional)",
+                voiceInputTitle: "Voice Input", // Added for button title
                 bloodGroupPlaceholder: "Select Your Blood Group",
-                submitButton: "Submit",
+                bloodGroupLabel: "", // Added label translation
+                lastDonationLabel: "Last Donation Date",
+                eligibilityLabel: "Donation Eligibility",
+                eligibilityDateSelect: "Select Date",
+                eligibilityDaysRemaining: "days remaining",
+                eligibilityEligible: "Eligible to Donate!",
+                healthIssuesLabel: "Health Issues (if any)",
+                submitButton: "Submit Now", // Text only, spinner added separately
                 thankYouTitle: "Thank You!",
-                thankYouMessage: "Your information has been successfully submitted. You are now a blood donor hero!",
-                thankYouMessage2: "You may be contacted in case of an emergency.",
+                thankYouMessage: "Your information has been submitted successfully. You are now a blood donor hero!",
+                thankYouMessage2: "You may be contacted in case of emergency.",
+                sharePrompt: "Inspire your friends:",
                 closePopup: "Okay",
-                scrollText: "Scroll Down"
+                faqTitle: "Frequently Asked Questions",
+                faqQ1: "Who can donate blood?",
+                faqA1: "Generally, any healthy adult between 18-60 years old, weighing 45kg or more, can donate blood. You shouldn't have certain diseases (like Hepatitis B/C, AIDS) and shouldn't have donated in the last 4 months.",
+                faqQ2: "How often can I donate?",
+                faqA2: "Healthy men can donate every 3 months, and healthy women can donate every 4 months.",
+                faqQ3: "Are there any side effects?",
+                faqA3: "Blood donation is safe. The body quickly replenishes the donated blood. You might feel slight weakness or dizziness temporarily, which resolves with rest and fluids. Donation can also have health benefits.",
+                faqQ4: "Any special preparation needed?",
+                faqA4: "Get enough sleep the night before and have a healthy meal before donating. Don't donate on an empty stomach. Drink plenty of water and fluids.",
+                footerText1: "One donation, a new life.",
+                footerOwner: "🎀  𝑀𝓊𝓈𝓁𝒾𝓂 𝒰𝒹𝒹𝒾𝓃 𝑀𝒦  🎀",
+                loadingText: "♥ Loading ♥..."
             },
             bn: {
-                title: "রক্তদাতা হিরো হোন",
-                subtitle: "একটি রক্তদান হাজার জীবন বাঁচাতে পারে",
-                registerButton: "রেজিস্টার করুন →",
+                title: "রক্তদাতা <span>হিরো</span> হোন", // Includes span
+                subtitle: "একটি রক্তদান হাজার জীবন বাঁচাতে পারে।",
+                registerButton: "রেজিস্টার করুন",
+                scrollText: "স্ক্রল করুন",
+                counterText: "জন রক্তদাতা হিরো",
+                impactTitle: "রক্তদান কেন গুরুত্বপূর্ণ?",
+                impactFact1: "৩টি জীবন বাঁচাতে পারে।",
+                impactFact2: "কারো না কারো রক্তের প্রয়োজন হয়।",
+                impactFact3: "একজন জীবন রক্ষাকারী হিরো হতে।",
                 formTitle: "রক্তদাতা তথ্য ফর্ম",
                 nameLabel: "পূর্ণ নাম",
                 currentAddressLabel: "বর্তমান ঠিকানা",
-                permanentAddressLabel: "স্থায়ী ঠিকানা",
+                permanentAddressLabel: "স্থায়ী ঠিকানা (ঐচ্ছিক)",
                 phone1Label: "জরুরি নম্বর ১",
-                phone2Label: "জরুরি নম্বর ২",
+                phone2Label: "জরুরি নম্বর ২ (ঐচ্ছিক)",
+                voiceInputTitle: "ভয়েস ইনপুট", // Added for button title
+                bloodGroupPlaceholder: "আপনার রক্তের গ্রুপ নির্বাচন করুন",
+                bloodGroupLabel: "",
                 lastDonationLabel: "শেষ রক্তদানের তারিখ",
                 eligibilityLabel: "রক্তদানের উপযুক্ততা",
+                eligibilityDateSelect: "তারিখ সিলেক্ট করুন",
+                eligibilityDaysRemaining: "দিন বাকি",
+                eligibilityEligible: "রক্তদানের জন্য উপযুক্ত!",
                 healthIssuesLabel: "শারীরিক সমস্যা (যদি থাকে)",
-                bloodGroupPlaceholder: "আপনার রক্তের গ্রুপ নির্বাচন করুন",
                 submitButton: "সাবমিট করুন",
                 thankYouTitle: "ধন্যবাদ!",
                 thankYouMessage: "আপনার তথ্য সফলভাবে জমা হয়েছে। আপনি এখন একজন রক্তদাতা হিরো!",
                 thankYouMessage2: "জরুরি প্রয়োজনে আপনার সাথে যোগাযোগ করা হতে পারে।",
+                sharePrompt: "আপনার বন্ধুদের অনুপ্রাণিত করুন:",
                 closePopup: "ঠিক আছে",
-                scrollText: "স্ক্রল করুন"
+                faqTitle: "সাধারণ জিজ্ঞাসা",
+                faqQ1: "কারা রক্ত দিতে পারবেন?",
+                faqA1: "সাধারণত ১৮ থেকে ৬০ বছর বয়সী যেকোন সুস্থ মানুষ, যাদের ওজন ৪৫ কেজি বা তার বেশি, তারা রক্ত দিতে পারবেন। নির্দিষ্ট কিছু রোগ (যেমন: হেপাটাইটিস বি/সি, এইডস) না থাকলে এবং বিগত ৪ মাসের মধ্যে রক্তদান না করে থাকলে আপনি রক্ত দিতে পারবেন।",
+                faqQ2: "কতদিন পর পর রক্ত দেওয়া যায়?",
+                faqA2: "একজন সুস্থ পুরুষ প্রতি ৩ মাস পর পর এবং একজন সুস্থ মহিলা প্রতি ৪ মাস পর পর রক্তদান করতে পারেন।",
+                faqQ3: "রক্ত দিলে কি শারীরিক কোনো অসুবিধা হয়?",
+                faqA3: "রক্তদান একটি নিরাপদ প্রক্রিয়া। রক্তদানের পর শরীর দ্রুত সেই রক্তের ঘাটতি পূরণ করে ফেলে। সাময়িকভাবে হালকা দুর্বলতা বা ঝিমুনি লাগতে পারে, যা পর্যাপ্ত বিশ্রাম ও তরল গ্রহণে ঠিক হয়ে যায়। রক্তদান স্বাস্থ্যের জন্য উপকারীও বটে।",
+                faqQ4: "রক্তদানের আগে কি বিশেষ প্রস্তুতির প্রয়োজন?",
+                faqA4: "রক্তদানের আগে রাতে পর্যাপ্ত ঘুম এবং সকালে স্বাস্থ্যকর নাস্তা করা উচিত। খালি পেটে রক্তদান করা উচিত নয়। প্রচুর পরিমাণে জল ও তরল পান করুন।",
+                footerText1: "একটি রক্তদান, একটি নতুন জীবন।",
+                footerOwner: "🎀  𝑀𝓊𝓈𝓁𝒾𝓂 𝒰𝒹𝒹𝒾𝓃 𝑀𝒦  🎀",
+                loadingText: "♥ Loading ♥..."
             }
         };
 
+        // --- Functions ---
+
+        // Debounce (Utility)
+        function debounce(func, wait = 15, immediate = true) {
+             let timeout;
+             return function() {
+                 const context = this, args = arguments;
+                 const later = function() {
+                     timeout = null;
+                     if (!immediate) func.apply(context, args);
+                 };
+                 const callNow = immediate && !timeout;
+                 clearTimeout(timeout);
+                 timeout = setTimeout(later, wait);
+                 if (callNow) func.apply(context, args);
+             };
+        }
+
+        // Update Language (Handles all text/attributes with data-lang-key)
         function updateLanguage(language) {
-            document.querySelector('.title').innerHTML = translations[language].title;
-            document.querySelector('.subtitle').textContent = translations[language].subtitle;
-            document.getElementById('registerBtn').innerHTML = translations[language].registerButton;
-            document.querySelector('.form-title').textContent = translations[language].formTitle;
-            document.querySelector('label[for="name"]').textContent = translations[language].nameLabel;
-            document.querySelector('label[for="current_address"]').textContent = translations[language].currentAddressLabel;
-            document.querySelector('label[for="permanent_address"]').textContent = translations[language].permanentAddressLabel;
-            document.querySelector('label[for="phone1"]').textContent = translations[language].phone1Label;
-            document.querySelector('label[for="phone2"]').textContent = translations[language].phone2Label;
-            document.querySelector('label[for="last_donation"]').textContent = translations[language].lastDonationLabel;
-            document.querySelector('.eligibility-label span:first-child').textContent = translations[language].eligibilityLabel;
-            document.querySelector('label[for="health_issues"]').textContent = translations[language].healthIssuesLabel;
-            document.querySelector('#blood_group option:first-child').textContent = translations[language].bloodGroupPlaceholder;
-            document.getElementById('submitBtn').textContent = translations[language].submitButton;
-            document.querySelector('.thank-you-title').textContent = translations[language].thankYouTitle;
-            document.querySelectorAll('.thank-you-message')[0].textContent = translations[language].thankYouMessage;
-            document.querySelectorAll('.thank-you-message')[1].textContent = translations[language].thankYouMessage2;
-            document.getElementById('closePopup').textContent = translations[language].closePopup;
-            document.querySelector('.scroll-text').textContent = translations[language].scrollText;
+            document.documentElement.lang = language;
+            languageToggle.textContent = language === 'bn' ? 'EN' : 'BN';
+            currentLanguage = language;
+
+            // Set H1 title explicitly using innerHTML to preserve the span
+            heroTitleEl.innerHTML = translations[language].title;
+
+            // Update elements with data-lang-key (excluding the H1)
+            document.querySelectorAll('[data-lang-key]:not(.title)').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[language]?.[key]) {
+                    const translation = translations[language][key];
+
+                    // Handle specific cases
+                    if (key === 'voiceInputTitle') {
+                        el.setAttribute('title', translation); // Update title attribute
+                    } else if (key === 'registerButton') {
+                        el.innerHTML = translation + ' <span class="pulse">→</span>'; // Keep arrow span
+                    } else if (key === 'submitButton') {
+                         // Update only the text span inside the submit button
+                         const textSpan = el.querySelector('span[data-lang-key="submitButton"]');
+                         if(textSpan) textSpan.textContent = translation;
+                         // If button has no inner span, update directly (less ideal)
+                         else if (el.tagName === 'BUTTON') el.childNodes[0].nodeValue = translation + ' ';
+                         else el.textContent = translation; // Fallback
+                    } else if (el.tagName === 'OPTION' && el.disabled) {
+                        // Handle placeholder option in select
+                        el.textContent = translation;
+                    } else {
+                        // Default: Update textContent for most elements (including spans inside FAQ questions)
+                        el.textContent = translation;
+                    }
+                } else {
+                     // Only log warning if key exists in *any* language but not current one
+                     if (Object.values(translations).some(lang => lang.hasOwnProperty(key))) {
+                        console.warn(`Translation key "${key}" not found for language "${language}"`);
+                     }
+                 }
+            });
+
+            // Update eligibility text (which might depend on selected date)
+            updateEligibility();
+            // Update voice recognition language (if API is available)
+             if (window.speechRecognitionInstancePhone1) {
+                 window.speechRecognitionInstancePhone1.lang = currentLanguage === 'bn' ? 'bn-BD' : 'en-US';
+             }
+             if (window.speechRecognitionInstancePhone2) {
+                 window.speechRecognitionInstancePhone2.lang = currentLanguage === 'bn' ? 'bn-BD' : 'en-US';
+             }
         }
 
-        languageToggle.addEventListener('click', () => {
-            currentLanguage = currentLanguage === 'bn' ? 'en' : 'bn';
-            languageToggle.textContent = currentLanguage === 'bn' ? 'EN' : 'BN';
-            document.documentElement.lang = currentLanguage;
-            updateLanguage(currentLanguage);
-        });
 
-        // Initialize with default language
-        updateLanguage(currentLanguage);
-
-        // Scroll to form section on register button click
-        registerBtn.addEventListener('click', () => {
-            formSection.scrollIntoView({ behavior: 'smooth' });
-        });
-
-        // Update eligibility meter based on last donation date
-        lastDonationInput.addEventListener('change', updateEligibility);
-
+        // Update Eligibility Meter
         function updateEligibility() {
-            const donationDate = new Date(lastDonationInput.value);
-            const today = new Date();
-            const diffTime = today - donationDate;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+             if (!lastDonationInput || !eligibilityText || !eligibilityMeter) return; // Ensure elements exist
 
-            // 120 days required for next donation
-            const eligibilityPercentage = Math.min((diffDays / 120) * 100, 100);
+             if (!lastDonationInput.value) {
+                 eligibilityText.textContent = translations[currentLanguage].eligibilityDateSelect;
+                 eligibilityMeter.style.width = '0%';
+                 eligibilityMeter.style.backgroundColor = 'var(--light-gray)';
+                 return;
+             }
+             const donationDate = new Date(lastDonationInput.value);
+             const today = new Date();
+             donationDate.setHours(0, 0, 0, 0);
+             today.setHours(0, 0, 0, 0);
 
-            eligibilityMeter.style.width = `${eligibilityPercentage}%`;
+             const diffTime = today - donationDate;
+             const diffDays = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
+             const requiredDays = 120; // 4 months approx
+             const eligibilityPercentage = Math.min(Math.max(0, (diffDays / requiredDays) * 100), 100);
 
-            if (eligibilityPercentage < 100) {
-                const daysLeft = 120 - diffDays;
-                eligibilityText.textContent = `${daysLeft} days remaining`;
-                eligibilityMeter.style.backgroundColor = '#ff0033';
-            } else {
-                eligibilityText.textContent = 'Eligible for donation';
-                eligibilityMeter.style.backgroundColor = '#4CAF50';
-            }
+             eligibilityMeter.style.width = `${eligibilityPercentage}%`;
+
+             if (eligibilityPercentage < 100) {
+                 const daysLeft = requiredDays - diffDays;
+                 eligibilityText.textContent = `${daysLeft} ${translations[currentLanguage].eligibilityDaysRemaining}`;
+                 eligibilityMeter.style.backgroundColor = 'var(--warning-yellow)';
+             } else {
+                 eligibilityText.textContent = translations[currentLanguage].eligibilityEligible;
+                 eligibilityMeter.style.backgroundColor = 'var(--success-green)';
+             }
         }
 
-        // Form submission
-        donorForm.addEventListener('submit', e => {
+        // Setup Sharing Links
+        function setupSharingLinks() {
+            const shareUrl = window.location.href; // Or your specific page URL
+            const shareTitleEn = "I'm a Blood Donor Hero!";
+            const shareTitleBn = "আমি একজন রক্তদাতা হিরো!";
+            const shareTextEn = `I just registered as a blood donor hero on ${shareUrl}! Join me and save lives. #BloodDonor #SaveLives`;
+            const shareTextBn = `আমি এইমাত্র ${shareUrl} -এ একজন রক্তদাতা হিরো হিসেবে রেজিস্টার করেছি! আপনিও যোগ দিন, জীবন বাঁচান। #রক্তদাতা #জীবনবাঁচান`;
+
+            const shareTitle = currentLanguage === 'bn' ? shareTitleBn : shareTitleEn;
+            const shareText = currentLanguage === 'bn' ? shareTextBn : shareTextEn;
+
+            const facebookShare = document.getElementById('shareFacebook');
+            const twitterShare = document.getElementById('shareTwitter');
+            const whatsappShare = document.getElementById('shareWhatsApp');
+
+            if(facebookShare) facebookShare.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}"e=${encodeURIComponent(shareText)}`;
+            if(twitterShare) twitterShare.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`;
+            if(whatsappShare) whatsappShare.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+        }
+
+        // Setup Voice Input (Stores instances globally for language updates)
+        function setupVoiceInput() {
+            if (!('webkitSpeechRecognition' in window)) {
+                document.querySelectorAll('.voice-input-btn').forEach(btn => btn.style.display = 'none');
+                console.warn("Web Speech API not supported.");
+                return;
+            }
+
+            const createRecognition = (buttonId, inputId, instanceName) => {
+                 const SpeechRecognition = window.webkitSpeechRecognition;
+                 const recognition = new SpeechRecognition();
+                 const button = document.getElementById(buttonId);
+                 const input = document.getElementById(inputId);
+                 if (!button || !input) return; // Exit if elements not found
+
+                 let currentRecognitionLang = currentLanguage === 'bn' ? 'bn-BD' : 'en-US';
+                 recognition.lang = currentRecognitionLang;
+                 recognition.continuous = false;
+                 recognition.interimResults = false;
+
+                 // Store instance globally for language change
+                 window[instanceName] = recognition;
+
+                 button.addEventListener('click', () => {
+                     recognition.lang = currentLanguage === 'bn' ? 'bn-BD' : 'en-US'; // Ensure lang is current
+                     try {
+                         recognition.start();
+                         button.classList.add('listening');
+                         button.setAttribute('aria-label', 'Listening...'); // Accessibility
+                     } catch (e) {
+                         console.error("Speech recognition start error:", e);
+                         button.classList.remove('listening');
+                         button.setAttribute('aria-label', translations[currentLanguage].voiceInputTitle);
+                     }
+                 });
+
+                 recognition.onresult = event => {
+                     const transcript = event.results[0][0].transcript;
+                     // Simple sanitization - remove spaces for phone numbers
+                     input.value = transcript.replace(/\s+/g, '');
+                     // Trigger events to update label and validation
+                     input.dispatchEvent(new Event('input', { bubbles: true }));
+                     input.dispatchEvent(new Event('blur', { bubbles: true })); // Trigger validation on finish
+                 };
+
+                 recognition.onerror = event => {
+                     console.error("Speech Recognition Error:", event.error);
+                     button.classList.remove('listening');
+                     button.setAttribute('aria-label', translations[currentLanguage].voiceInputTitle);
+                 };
+
+                 recognition.onend = () => {
+                     button.classList.remove('listening');
+                      button.setAttribute('aria-label', translations[currentLanguage].voiceInputTitle);
+                 };
+            };
+
+            createRecognition('voiceBtn1', 'phone1', 'speechRecognitionInstancePhone1');
+            createRecognition('voiceBtn2', 'phone2', 'speechRecognitionInstancePhone2');
+        }
+
+        // Animate Counter Function
+        function animateCounter(element) {
+             const target = parseInt(element.getAttribute('data-count-to'), 10);
+             if (isNaN(target) || element.classList.contains('animated')) return; // Prevent re-animation
+
+             element.classList.add('animated'); // Mark as animated
+             let current = 0;
+             const increment = Math.max(1, Math.floor(target / 100)); // Faster increment for larger numbers
+             const duration = 1800; // ms
+             const stepTime = Math.max(10, Math.abs(Math.floor(duration / (target / increment))));
+
+             const timer = setInterval(() => {
+                 current += increment;
+                 if (current >= target) {
+                     current = target;
+                     clearInterval(timer);
+                 }
+                 element.textContent = current.toLocaleString(); // Format number
+             }, stepTime);
+         }
+
+
+        // Setup Intersection Observer (For fade-in animations on scroll)
+        function setupIntersectionObserver() {
+             // Observe sections and fact cards
+             const elementsToObserve = document.querySelectorAll('.fact-card, .form-container, .counter-section, .impact-section, .faq-section');
+             if (!elementsToObserve.length) return;
+
+             const observerOptions = {
+                 root: null, // viewport
+                 rootMargin: '0px 0px -80px 0px', // Trigger slightly before fully visible
+                 threshold: 0.1  // 10% visible
+             };
+
+             const observerCallback = (entries, observer) => {
+                 entries.forEach((entry, index) => {
+                     if (entry.isIntersecting) {
+                         if (entry.target.classList.contains('fact-card')) {
+                             // Stagger fact card animation
+                             const siblings = Array.from(entry.target.parentNode.children).filter(el => el.classList.contains('fact-card'));
+                             const delay = siblings.indexOf(entry.target) * 150; // ms
+                             entry.target.style.transitionDelay = `${delay}ms`;
+                             entry.target.classList.add('is-visible');
+                         } else if (entry.target.id === 'counterSection') {
+                              entry.target.classList.add('is-visible'); // Animate section itself
+                             animateCounter(donorCounterEl); // Animate the counter number
+                         } else {
+                             // Animate other sections directly
+                             entry.target.style.transitionDelay = `0ms`; // Reset delay if reused
+                             entry.target.classList.add('is-visible');
+                         }
+                         observer.unobserve(entry.target); // Stop observing once visible
+                     }
+                 });
+             };
+
+             const intersectionObserver = new IntersectionObserver(observerCallback, observerOptions);
+             elementsToObserve.forEach(el => intersectionObserver.observe(el));
+         }
+
+
+        // Setup Form Input Validation
+        function setupValidation() {
+            const inputsToValidate = donorForm.querySelectorAll('input[required], select[required], input[pattern]');
+            inputsToValidate.forEach(input => {
+                let iconSpan = input.parentNode.querySelector('.validation-icon');
+                if (!iconSpan && (input.required || input.pattern)) {
+                    iconSpan = document.createElement('span');
+                    iconSpan.classList.add('validation-icon');
+                    const voiceBtn = input.parentNode.querySelector('.voice-input-btn');
+                    if (voiceBtn) { input.parentNode.insertBefore(iconSpan, voiceBtn); }
+                    else { input.parentNode.appendChild(iconSpan); }
+                }
+
+                const handleValidation = () => validateInput(input);
+                // Validate on blur immediately, debounce on input for better UX
+                input.addEventListener('blur', handleValidation);
+                input.addEventListener('input', debounce(handleValidation, 400, false)); // Validate after typing stops
+
+                // Clear state on focus
+                input.addEventListener('focus', () => {
+                    const parentGroup = input.closest('.input-group');
+                    parentGroup?.classList.remove('valid', 'invalid', 'validated');
+                });
+            });
+        }
+
+        // Validate Single Input
+        function validateInput(input, markAsValidated = true) {
+            const parentGroup = input.closest('.input-group');
+            if (!parentGroup) return false; // Indicate validation couldn't happen
+
+            const iconExists = parentGroup.querySelector('.validation-icon');
+            if (markAsValidated && iconExists) { parentGroup.classList.add('validated'); }
+
+            // Check validity, treat empty required select as invalid
+            // Also ensure required fields are not just whitespace
+            const isSelectInvalid = input.tagName === 'SELECT' && input.required && input.value === "";
+            const isInputInvalid = input.required && input.value.trim() === "";
+            const patternMismatch = input.pattern && !input.checkValidity() && input.value.trim() !== ""; // Check pattern only if not empty
+
+            const isValid = !isSelectInvalid && !isInputInvalid && !patternMismatch && input.checkValidity();
+            const isEmptyOptional = !input.required && input.value.trim() === '';
+
+
+            if (isValid || isEmptyOptional) {
+                 if (iconExists) { // Only add valid/invalid if icon is present
+                    parentGroup.classList.add('valid');
+                    parentGroup.classList.remove('invalid');
+                 }
+            } else {
+                 if (iconExists) {
+                    parentGroup.classList.add('invalid');
+                    parentGroup.classList.remove('valid');
+                 }
+            }
+            return isValid || isEmptyOptional; // Return validation status
+        }
+
+
+        // Clear All Validation States
+        function clearAllValidationStates() {
+            donorForm.querySelectorAll('.input-group').forEach(group => {
+                group.classList.remove('validated', 'valid', 'invalid');
+            });
+        }
+
+        // Setup FAQ Accordion Toggle
+        function setupFAQ() {
+             faqItems.forEach(item => {
+                 const question = item.querySelector('.faq-question');
+                 const answer = item.querySelector('.faq-answer');
+                 if (!question || !answer) return;
+
+                 question.setAttribute('aria-expanded', 'false'); // Accessibility
+                 answer.setAttribute('aria-hidden', 'true'); // Accessibility
+
+                 question.addEventListener('click', () => {
+                     const isActive = item.classList.contains('active');
+
+                     // Close all other items for single-open accordion behavior
+                     faqItems.forEach(otherItem => {
+                         if (otherItem !== item && otherItem.classList.contains('active')) {
+                             otherItem.classList.remove('active');
+                             otherItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+                             otherItem.querySelector('.faq-answer').setAttribute('aria-hidden', 'true');
+                         }
+                     });
+
+                     // Toggle current item
+                     item.classList.toggle('active');
+                     question.setAttribute('aria-expanded', !isActive);
+                     answer.setAttribute('aria-hidden', isActive);
+                 });
+             });
+         }
+
+         // Setup Hero Hearts Parallax Effect
+         function setupParallax() {
+            const hearts = document.querySelectorAll('.animated-heart');
+            if (!hearts.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                 return; // Don't run if no hearts or reduced motion is preferred
+            }
+
+            let animationFrameId = null;
+
+            const moveHearts = (e) => {
+                 // Use pageX/pageY for consistency if body might scroll slightly
+                 const { pageX, pageY } = e;
+                 // Calculate mouse position relative to center of hero section
+                 const heroRect = heroSection.getBoundingClientRect();
+                 const xCenter = heroRect.left + heroRect.width / 2 + window.scrollX;
+                 const yCenter = heroRect.top + heroRect.height / 2 + window.scrollY;
+
+                 const x = (pageX - xCenter) / (heroRect.width / 2); // -1 to 1 approx
+                 const y = (pageY - yCenter) / (heroRect.height / 2); // -1 to 1 approx
+
+                 hearts.forEach(heart => {
+                     const depth = parseFloat(heart.getAttribute('data-parallax-depth') || 0.2);
+                     const moveX = -x * 18 * depth; // Increased sensitivity slightly
+                     const moveY = -y * 18 * depth;
+                     // Apply transform - keeps existing pulse animation scale if applied via animation property
+                     heart.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                 });
+                 animationFrameId = null; // Allow next frame request
+             };
+
+             const handleMouseMove = (e) => {
+                  if (!animationFrameId) { // Throttle using requestAnimationFrame
+                      animationFrameId = requestAnimationFrame(() => moveHearts(e));
+                  }
+             };
+
+             heroSection.addEventListener('mousemove', handleMouseMove);
+
+             // Reset position smoothly when mouse leaves hero section
+             heroSection.addEventListener('mouseleave', () => {
+                  if(animationFrameId) cancelAnimationFrame(animationFrameId);
+                  animationFrameId = null;
+                  hearts.forEach(heart => {
+                      // Transition back to center (requires transform transition in CSS)
+                      heart.style.transform = `translate(0px, 0px)`;
+                  });
+             });
+         }
+
+        // Handle Form Submission
+        function handleFormSubmit(e) {
             e.preventDefault();
 
-            // Loading state
-            submitBtn.classList.add('loading');
+            // --- Validation Check ---
+            let isFormValid = true;
+            let firstInvalid = null;
+            // Validate all required/pattern inputs and find the first invalid one
+            donorForm.querySelectorAll('input[required], select[required], input[pattern]').forEach(input => {
+                 const isValid = validateInput(input, true); // Use the validation function, force marking state
+                 if (!isValid && isFormValid) { // isFormValid check ensures we only record the first
+                     isFormValid = false;
+                     firstInvalid = input;
+                 }
+            });
 
-            // Collect form data
+            if (!isFormValid) {
+                console.warn("Form is invalid.");
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                // Add a subtle shake animation to the submit button
+                submitBtn.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => submitBtn.style.animation = '', 500); // Remove animation after it finishes
+                return;
+            }
+
+            // --- Form is valid ---
+            console.log("Form is valid. Submitting...");
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // Play Confetti
+             var defaults = { particleCount: 100, spread: 70, angle: 90, origin: { y: 0.6 }, };
+             try { // Wrap confetti in try-catch in case library fails
+                 confetti({ ...defaults, shapes: ['circle'], colors: [ '#e63946', '#f1faee', '#a8dadc', '#457b9d', '#1d3557' ] });
+                 // Attempt heart-like confetti (red tones, varied size)
+                 function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+                 confetti({
+                     angle: randomInRange(60, 120), spread: randomInRange(60, 80),
+                     particleCount: randomInRange(40, 70), origin: { y: 0.6 },
+                     colors: ['#e63946', '#ff758f', '#c1121f'], // Red tones
+                     shapes: ['circle'], // Still using circles, but red
+                     scalar: randomInRange(0.7, 1.4) // Vary size
+                 });
+             } catch(confettiError) {
+                 console.warn("Confetti animation failed:", confettiError);
+             }
+
+
             const formData = new FormData(donorForm);
             const message = `
 🩸 *New Blood Donor Registration* 🩸
-👤 *Name*: ${formData.get('name')}
-🏠 *Current Address*: ${formData.get('current_address')}
-📍 *Permanent Address*: ${formData.get('permanent_address') || 'N/A'}
-📞 *Phone 1*: ${formData.get('phone1')}
-📞 *Phone 2*: ${formData.get('phone2') || 'N/A'}
-🩺 *Last Donation Date*: ${formData.get('last_donation')}
-💉 *Blood Group*: ${formData.get('blood_group')}
-⚠️ *Health Issues*: ${formData.get('health_issues') || 'None'}
+--------------------------------------
+👤 **Name:** ${formData.get('name')}
+🩸 **Blood Group:** ${formData.get('blood_group') || '_Not Selected_'}
+🏠 **Current Addr:** ${formData.get('current_address')}
+📍 **Permanent Addr:** ${formData.get('permanent_address') || '_N/A_'}
+📞 **Phone 1:** \`${formData.get('phone1')}\`
+📞 **Phone 2:** ${formData.get('phone2') ? `\`${formData.get('phone2')}\`` : '_N/A_'}
+🗓️ **Last Donation:** ${formData.get('last_donation') ? new Date(formData.get('last_donation')).toLocaleDateString('en-GB') : '_N/A_'}
+🩺 **Health Issues:** ${formData.get('health_issues') || '_None Specified_'}
+--------------------------------------
+_Submitted: ${new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' })}_
             `;
 
-            // Send data to Telegram Bot
+            // --- Telegram API Call ---
             fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     chat_id: chatId,
                     text: message,
-                    parse_mode: 'Markdown'
+                    parse_mode: 'Markdown' // Use Markdown for formatting
                 })
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to send message');
-                    }
-
-                    // Show thank you popup
-                    thankYouPopup.classList.add('active');
-
-                    // Reset form
-                    donorForm.reset();
-                    eligibilityMeter.style.width = '0';
-                    eligibilityText.textContent = 'Select a date';
-                })
-                .catch(error => {
-                    console.error('Error!', error.message);
-                    alert('An error occurred! Please try again later.');
-                })
-                .finally(() => {
-                    submitBtn.classList.remove('loading');
-                });
-        });
-
-        // Close popup
-        closePopup.addEventListener('click', () => {
-            thankYouPopup.classList.remove('active');
-        });
-
-        // Voice input functionality
-        if ('webkitSpeechRecognition' in window) {
-            const recognition1 = new webkitSpeechRecognition();
-            const recognition2 = new webkitSpeechRecognition();
-            
-            recognition1.lang = 'bn-BD';
-            recognition2.lang = 'bn-BD';
-            
-            voiceBtn1.addEventListener('click', () => {
-                voiceBtn1.classList.add('listening');
-                recognition1.start();
+            .then(response => response.json())
+            .then(data => {
+                if (!data.ok) {
+                    // Try to get more specific error from Telegram response
+                    throw new Error(`Telegram API Error: ${data.description || 'Unknown error'}`);
+                }
+                console.log('Telegram Success:', data);
+                thankYouPopup.classList.add('active');
+                setupSharingLinks(); // Update links potentially based on language
+                donorForm.reset();
+                clearAllValidationStates();
+                updateEligibility(); // Reset eligibility meter
+            })
+            .catch(error => {
+                console.error('Submission Error!', error);
+                // Provide user-friendly error message
+                alert(`Submission failed: ${error.message}. Please check your connection or try again later.`);
+            })
+            .finally(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
             });
-            
-            voiceBtn2.addEventListener('click', () => {
-                voiceBtn2.classList.add('listening');
-                recognition2.start();
-            });
-            
-            recognition1.onresult = function(event) {
-                document.getElementById('phone1').value = event.results[0][0].transcript;
-                voiceBtn1.classList.remove('listening');
-            };
-            
-            recognition2.onresult = function(event) {
-                document.getElementById('phone2').value = event.results[0][0].transcript;
-                voiceBtn2.classList.remove('listening');
-            };
-            
-            recognition1.onerror = function(event) {
-                voiceBtn1.classList.remove('listening');
-            };
-            
-            recognition2.onerror = function(event) {
-                voiceBtn2.classList.remove('listening');
-            };
-        } else {
-            voiceBtn1.style.display = 'none';
-            voiceBtn2.style.display = 'none';
         }
 
-        // Set max date for last donation input
-        document.getElementById('last_donation').max = new Date().toISOString().split('T')[0];
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Loading Screen Hiding ---
+             const hideLoader = () => {
+                 if(loadingScreen) loadingScreen.classList.add('hidden');
+             }
+             const minLoaderTime = 1000; // Min time loader is visible (ms)
+             const loadStartTime = Date.now();
+
+             // Hide loader after min time OR when page is fully loaded, whichever is later
+             window.addEventListener('load', () => {
+                 const elapsedTime = Date.now() - loadStartTime;
+                 const remainingTime = Math.max(0, minLoaderTime - elapsedTime);
+                 setTimeout(hideLoader, remainingTime);
+             });
+             // Fallback: If load event takes too long, hide after a max timeout
+             setTimeout(hideLoader, 4000); // Max 4 seconds
+
+            // --- Initial Setup Calls ---
+            updateLanguage(currentLanguage); // Set initial language texts
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            // Set max date for last donation to today
+            try { lastDonationInput.max = new Date().toISOString().split('T')[0]; } catch (e) { console.warn("Could not set max date for donation input.")}
+            updateEligibility(); // Set initial state of eligibility meter
+            setupIntersectionObserver(); // Start observing elements for animations
+            setupValidation(); // Add validation listeners
+            setupVoiceInput(); // Initialize voice input buttons
+            setupFAQ(); // Initialize FAQ accordion
+            setupParallax(); // Initialize hero parallax effect
+
+            // --- Event Listeners ---
+            languageToggle.addEventListener('click', () => {
+                const newLang = currentLanguage === 'bn' ? 'en' : 'bn';
+                updateLanguage(newLang);
+            });
+            registerBtn.addEventListener('click', (e) => {
+                 e.preventDefault(); // Prevent default if it's ever inside a form
+                 formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            lastDonationInput.addEventListener('change', updateEligibility);
+            donorForm.addEventListener('submit', handleFormSubmit);
+            closePopup.addEventListener('click', () => {
+                 thankYouPopup.classList.remove('active');
+                 // Optionally focus back to a relevant element, e.g., the form title
+                 // formContainer.querySelector('.form-title').focus();
+            });
+
+             // Re-evaluate sections visibility on load in case they are already in view
+             const checkInitialVisibility = (section) => {
+                 if (!section) return;
+                 const rect = section.getBoundingClientRect();
+                 // Check if element is at least partially in the viewport
+                 const isInViewport = rect.top < window.innerHeight && rect.bottom >= 0;
+                 if (isInViewport && !section.classList.contains('is-visible')) {
+                      section.classList.add('is-visible');
+                      // Specific actions if needed on initial load AND visibility
+                      if (section.id === 'counterSection') {
+                          animateCounter(donorCounterEl);
+                      }
+                 }
+             };
+
+             // Check initial visibility for all animated sections
+             [counterSection, impactSection, faqSection, formContainer].forEach(checkInitialVisibility);
+             // Also check fact cards (though observer usually handles this well)
+             document.querySelectorAll('.fact-card').forEach(checkInitialVisibility);
+
+
+        });
+
     </script>
-    <footer style="text-align: center; margin-top: 20px;">
-        <a href="http://mk777.rf.gd/?i=1" style="color: var(--blood-red); text-decoration: none;">&copy; 2023 Muslim Uddin MK</a>
-    </footer>
 </body>
 </html>
